@@ -9,8 +9,11 @@ const Home = () => {
   const navigation = useNavigation();
   return (
     <View style={styles.mainContainer}>
+      <View style={{ width:width, backgroundColor:'#FFF', height:height*0.55, bottom:0,position:'absolute', borderTopLeftRadius:25, borderTopRightRadius:25 }}>
+
+      </View>
       <View style={{ 
-        backgroundColor:'#01143C', width:width*0.9, position:'absolute', 
+        backgroundColor:'#031D53', width:width*0.9, position:'absolute', 
         bottom:0, alignSelf:'center',borderRadius:width*0.02, marginBottom:height*0.01, display:'flex', flexDirection:'row',justifyContent:'space-around'   
         }}
       >
@@ -73,6 +76,7 @@ const styles = StyleSheet.create({
     flex:1,
     flexDirection: "column",
     position:'relative',
+    backgroundColor:'#031D53'
   },
   bottomTabBtn:{
     flex:1,

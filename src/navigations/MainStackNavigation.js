@@ -7,7 +7,7 @@ import ForgotPassword from '../screens/ForgotPasswordScreen';
 import DrawerNavigation from "./DrawerNavigation";
 import GetStarted from "../screens/GetStartedScreen"
 import Home from '../screens/HomeScreen';
-
+import 'react-native-gesture-handler';
 const Stack = createNativeStackNavigator();
 
 function MainStackNavigation(props) {
