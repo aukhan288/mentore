@@ -10,7 +10,6 @@ const CustomDrawerHeader =()=> {
       style={{padding:10}}>
         <Icon name="bell" color={'#031D53'} size={20} />
       </TouchableOpacity>
-      
     </View>
   )
 }

@@ -124,7 +124,7 @@ const Home = () => {
  
         }}
         >
-          <Image source={require('../assetes/images/plus.png')} style={{height:width*0.08,width:width*0.08}} />
+          <Image source={require('../assetes/images/plus.png')} style={{height:width*0.06,width:width*0.06}} />
           {/* <Icon name="plus" color={'#FFF'} size={30} /> */}
         </TouchableOpacity>
         </View>
