@@ -1,38 +1,45 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, KeyboardAvoidingView, KeyboardAvoidingViewBase } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import {CountryPicker} from "react-native-country-codes-picker";
 import { Button } from 'react-native'
 import DatePicker from 'react-native-date-picker'
+import ErrorComponent from "../components/ErrorComponent";
+import { createUser } from '../services/signup'
+
 const { height, width } = Dimensions.get('screen');
 const Register = () => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
-    function ListHeaderComponent({countries, lang, onPress}) {
-        return (
-            <View
-                style={{
-                    paddingBottom: 20,
-                }}
-            >
-                <Text>
-                    Popular countries
-                </Text>
-                {countries?.map((country, index) => {
-                    return (
-                        <CountryButton key={index} item={country} name={country?.name?.[lang || 'en']} onPress={() => onPress(country)} />
-                    )
-                })}
-            </View>
-        )
-    }
+  const [name, setName] = useState('');
+  const [email, setEmail] = useState('');
+  const [contact, setContact] = useState('');
+  const [dob, setDob] = useState('');
+  const [nameError, setNameError] = useState(null);
+  const [emailError,setEmailError] = useState(null);
+  const [cellError,setCellError] = useState(null);
+  const [dobError,setDobError] = useState(null);
+  const [passwordError,setPasswordError] = useState(null);
+  const [confirmPasswordError,setConfirmPasswordError] = useState(null);
 
+   
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState('🇵🇰 +92');
   const navigation = useNavigation();
+
+  const signUp=()=>{
+    createUser({name:name,email:email}).then(res=>{
+      console.log("#########")
+      console.log(res)
+    })
+    .catch(e=>{
+      console.log("*************")
+      console.log(e)
+    })
+  }
   return (
     <View style={styles.mainContainer}>
       <View style={{width:width,paddingHorizontal:width*0.04}}>
@@ -41,16 +48,22 @@ const Register = () => {
       />
       <Text style={{fontSize:width*0.07, color:'#1B2A56',marginTop:height*0.05}}>Create Account</Text>
       </View>
-      <View style={styles.formView}>
+      <KeyboardAvoidingView style={styles.formView}>
       
         <TextInput 
           placeholder="Name" 
-          keyboardType="default" 
-          style={styles.textInput} />
+          keyboardType="default"
+          onChangeText={(text) => setName(text)}
+          maxLength={30}
+          style={[styles.textInput, {borderColor: nameError?'red':"#0008"}]} />
+          {nameError && <ErrorComponent error={nameError} />}
+          
         <TextInput 
           placeholder="Email" 
           keyboardType="email-address" 
-          style={styles.textInput} />
+          onChangeText={(text) => setEmail(text)}
+          style={[styles.textInput, {borderColor: nameError?'red':"#0008"}]}/>
+          {emailError && <ErrorComponent error={emailError} />}
         <View style={styles.phoneInputRow}>
         <TouchableOpacity
         searchMessage={true}
@@ -73,7 +86,7 @@ const Register = () => {
       <TextInput 
        keyboardType="phone-pad"
        placeholder="Phone Number"
-      />
+       />
       <CountryPicker
         show={show}
         // when picker button press you will get the country object with dial code
@@ -83,12 +96,13 @@ const Register = () => {
           setShow(false);
         }}
         style={{
-            modal: {
-                height: height*0.5,
-            }, 
+          modal: {
+            height: height*0.5,
+          }, 
         }}
-      />
+        />
         </View>
+        {emailError && <ErrorComponent error={emailError} />}
 
         <TouchableOpacity
           style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:width*0.92, marginBottom:height*0.02, borderWidth:1,borderRadius:8,paddingHorizontal:width*0.025,paddingVertical:height*0.01}}
@@ -112,10 +126,11 @@ const Register = () => {
           setOpen(false)
         }}
       />
-        <View style={styles.passwordInputRow}>
+        <View style={[styles.passwordInputRow,{borderColor:passwordError?'red':'#0004'}]}>
           <TextInput 
           placeholder="Password" 
           style={{ flex: 0.9 }} 
+          onChangeText={(text=>setPasswordError(text))}
           secureTextEntry={showPassword} />
           <TouchableOpacity
             style={styles.eyeBtn}
@@ -124,10 +139,12 @@ const Register = () => {
               <Icon name="eye-slash" size={30} color="#0007" />}
           </TouchableOpacity>
         </View>
-        <View style={styles.passwordInputRow}>
+        {passwordError && <ErrorComponent error={passwordError} />}
+        <View style={[styles.passwordInputRow,{borderColor:confirmPasswordError?'red':'#0004'}]}>
           <TextInput 
           placeholder="Confirm Password" 
           style={{ flex: 0.9 }} 
+          onChangeText={(text=>setConfirmPasswordError(text))}
           secureTextEntry={showConfirmPassword} />
           <TouchableOpacity
             style={styles.eyeBtn}
@@ -136,8 +153,11 @@ const Register = () => {
               <Icon name="eye-slash" size={30} color="#0007" />}
           </TouchableOpacity>
         </View>
+        {confirmPasswordError && <ErrorComponent error={confirmPasswordError} />}
          
-        <TouchableOpacity style={styles.loginBtn}>
+        <TouchableOpacity
+        onPress={signUp}
+        style={styles.loginBtn}>
           <Text style={styles.loginText}>Sign Up</Text>
         </TouchableOpacity>
         <View style={styles.orRow}>
@@ -153,7 +173,7 @@ const Register = () => {
             <Text style={styles.signUpTxt}>Login</Text>
           </TouchableOpacity>
         </View>
-      </View>
+      </KeyboardAvoidingView>
     </View>
   )
 }
@@ -190,7 +210,7 @@ const styles = StyleSheet.create({
     position: 'relative',
     borderRadius: 8,
     borderWidth: 1,
-    marginBottom:height*0.02
+    marginTop:height*0.02
   },
   phoneInputRow: {
     display: "flex",
@@ -199,16 +219,15 @@ const styles = StyleSheet.create({
     position: 'relative',
     borderRadius: 8,
     borderWidth: 1,
-    marginBottom:height*0.02,
+    marginTop:height*0.02,
     alignItems:'center'
   },
   textInput: {
     width: "100%",
     borderWidth: 1,
-    borderBlockColor: "#0008",
     paddingLeft: 10,
     borderRadius: 7,
-    marginBottom: 15
+    marginTop: 15
   },
   loginBtn: {
     backgroundColor: '#1B2A56',

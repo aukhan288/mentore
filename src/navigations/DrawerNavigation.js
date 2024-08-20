@@ -13,12 +13,13 @@ const DrawerNavigation = (props) => {
   
   return (
       <Drawer.Navigator
+      detachInactiveScreens
         drawerContent={(props) => <CustomDrawer {...props} />}
         screenOptions={{
           headerTitleAlign: 'center',
           headerTitle: () => <CustomDrawerHeader />,
           drawerStyle: {
-            backgroundColor: '#f5f5f5', // Customize drawer background color
+            // backgroundColor: '#f5f5f5', // Customize drawer background color
           },
         }}
       >
