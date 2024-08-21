@@ -15,11 +15,7 @@ function MainStackNavigation(props) {
     <NavigationContainer>
       <Stack.Navigator>
         {/* Authentication Stack */}
-        <Stack.Screen 
-          name="Register" 
-          component={Register} 
-          options={{ headerShown: false }} 
-        />
+       
         <Stack.Screen 
           name="GetStarted" 
           component={GetStarted} 
@@ -28,6 +24,11 @@ function MainStackNavigation(props) {
         <Stack.Screen 
           name="Login" 
           component={Login} 
+          options={{ headerShown: false }} 
+        />
+         <Stack.Screen 
+          name="Register" 
+          component={Register} 
           options={{ headerShown: false }} 
         />
        

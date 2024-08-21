@@ -1,13 +1,42 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, ImageBackground } from "react-native"
+import { View, Text, TextInput, Image,Alert, TouchableOpacity, Dimensions, StyleSheet, ImageBackground } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
+import { loginUser } from '../services/userServices'
 const { height, width } = Dimensions.get('screen');
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
+  const [loginLoader, setLoginLoader] = useState(false)
+  const [email, setEmail] = useState('')
+  const [password, setPassword] = useState('')
+
+
+
+  const login = async () => {
+    setLoginLoader(true)
+    // setEmailError(null)
+    // setPasswordError(null)
+    const result = await loginUser({ 
+      email:email,
+      password:password 
+    });
+    if (result.code==200) {
+      setLoginLoader(false)
+      Alert.alert('User Login successfully')
+        navigation.navigate('DrawerStack')
+        // Handle success (e.g., redirect, show success message, etc.)
+    } else {
+      setLoginLoader(false)
+        if(result.status==422){
+          if(result.data.errors.hasOwnProperty('name')){
+            // setNameError(result.data.errors.name)
+          }
+        }
+    }
+};
 
   return (
     <View style={styles.mainContainer}>
@@ -21,11 +50,14 @@ const Login = () => {
         <TextInput 
           placeholder="Email" 
           keyboardType="email-address" 
-          style={styles.textInput} />
+          style={styles.textInput} 
+          onChangeText={(text)=>setEmail(text)}
+          />
         <View style={styles.passwordInputRow}>
           <TextInput 
           placeholder="Password" 
           style={{ flex: 0.9 }} 
+          onChangeText={(text)=>setPassword(text)}
           secureTextEntry={showPassword} />
           <TouchableOpacity
             style={styles.eyeBtn}
@@ -52,9 +84,10 @@ const Login = () => {
         </View>
        
       </View>
+  
       <View style={{position:'absolute',bottom:height*0.02,width:width,justifyContent:'center',}}>
       <TouchableOpacity 
-        onPress={()=>{navigation.navigate('DrawerStack')}}
+        onPress={login}
         style={styles.loginBtn}>
           <Text style={styles.loginText}>Login</Text>
         </TouchableOpacity>
