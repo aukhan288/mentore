@@ -1,27 +1,30 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, KeyboardAvoidingView, KeyboardAvoidingViewBase } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity,Alert, Dimensions, StyleSheet, KeyboardAvoidingView, ActivityIndicator } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import {CountryPicker} from "react-native-country-codes-picker";
 import { Button } from 'react-native'
 import DatePicker from 'react-native-date-picker'
 import ErrorComponent from "../components/ErrorComponent";
-import { createUser } from '../services/signup'
+import { createUser } from '../services/userServices'
 
 const { height, width } = Dimensions.get('screen');
-const Register = () => {
+const Register = (props) => {
   const [date, setDate] = useState(new Date())
   const [open, setOpen] = useState(false)
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [contact, setContact] = useState('');
-  const [dob, setDob] = useState('');
+  const [dob, setDob] = useState(new Date());
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
   const [nameError, setNameError] = useState(null);
   const [emailError,setEmailError] = useState(null);
   const [cellError,setCellError] = useState(null);
   const [dobError,setDobError] = useState(null);
   const [passwordError,setPasswordError] = useState(null);
   const [confirmPasswordError,setConfirmPasswordError] = useState(null);
+  const [signUpLoader,setSignUpLoader] = useState(false);
 
    
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
@@ -30,16 +33,53 @@ const Register = () => {
   const [countryCode, setCountryCode] = useState('🇵🇰 +92');
   const navigation = useNavigation();
 
-  const signUp=()=>{
-    createUser({name:name,email:email}).then(res=>{
-      console.log("#########")
-      console.log(res)
-    })
-    .catch(e=>{
-      console.log("*************")
-      console.log(e)
-    })
-  }
+  const signUp = async () => {
+    setSignUpLoader(true)
+    setNameError(null)
+    setEmailError(null)
+    setCellError(null)
+    setDobError(null)
+    setPasswordError(null)
+    setConfirmPasswordError(null)
+    const result = await createUser({ 
+      name:name,
+      email:email,
+      contact:contact,
+      country:'pakistan',
+      dob:dob,
+      password:password,
+      confirmPassword:confirmPassword 
+    });
+    if (result.code==201) {
+      setSignUpLoader(false)
+      Alert.alert('User created successfully')
+        navigation.navigate('Login')
+        // Handle success (e.g., redirect, show success message, etc.)
+    } else {
+      setSignUpLoader(false)
+        if(result.status==422){
+          if(result.data.errors.hasOwnProperty('name')){
+            setNameError(result.data.errors.name)
+          }
+          if(result.data.errors.hasOwnProperty('email')){
+            setEmailError(result.data.errors.email)
+          }
+          if(result.data.errors.hasOwnProperty('contact')){
+            setCellError(result.data.errors.contact)
+          }
+          if(result.data.errors.hasOwnProperty('dob')){
+            setDobError(result.data.errors.dob)
+          }
+          if(result.data.errors.hasOwnProperty('password')){
+            setPasswordError(result.data.errors.password)
+          }
+          if(result.data.errors.hasOwnProperty('confirmPassword')){
+            setConfirmPasswordError(result.data.errors.confirmPassword)
+          }
+        }
+    }
+};
+  
   return (
     <View style={styles.mainContainer}>
       <View style={{width:width,paddingHorizontal:width*0.04}}>
@@ -53,6 +93,7 @@ const Register = () => {
         <TextInput 
           placeholder="Name" 
           keyboardType="default"
+          editable={!signUpLoader}
           onChangeText={(text) => setName(text)}
           maxLength={30}
           style={[styles.textInput, {borderColor: nameError?'red':"#0008"}]} />
@@ -60,13 +101,15 @@ const Register = () => {
           
         <TextInput 
           placeholder="Email" 
+          editable={!signUpLoader}
           keyboardType="email-address" 
           onChangeText={(text) => setEmail(text)}
-          style={[styles.textInput, {borderColor: nameError?'red':"#0008"}]}/>
+          style={[styles.textInput, {borderColor: emailError?'red':"#0008"}]}/>
           {emailError && <ErrorComponent error={emailError} />}
-        <View style={styles.phoneInputRow}>
+        <View style={[styles.phoneInputRow,{borderColor:dobError?'red':'#0008'}]}>
         <TouchableOpacity
         searchMessage={true}
+        disabled={signUpLoader}
         onPress={() => setShow(true)}
         style={{
             display:'flex',
@@ -85,7 +128,9 @@ const Register = () => {
       </TouchableOpacity>
       <TextInput 
        keyboardType="phone-pad"
+       editable={!signUpLoader}
        placeholder="Phone Number"
+       onChangeText={(text) => setContact(text)}
        />
       <CountryPicker
         show={show}
@@ -102,13 +147,14 @@ const Register = () => {
         }}
         />
         </View>
-        {emailError && <ErrorComponent error={emailError} />}
+        {dobError && <ErrorComponent error={cellError} />}
 
         <TouchableOpacity
-          style={{flexDirection:'row',alignItems:'center',justifyContent:'space-between',width:width*0.92, marginBottom:height*0.02, borderWidth:1,borderRadius:8,paddingHorizontal:width*0.025,paddingVertical:height*0.01}}
-            onPress={() => setOpen(true)}
+        disabled={signUpLoader}
+          style={{flexDirection:'row',borderColor:dobError?'red':'#0008', alignItems:'center',justifyContent:'space-between',width:width*0.92, marginTop:height*0.02, borderWidth:1,borderRadius:8,paddingHorizontal:width*0.025,paddingVertical:height*0.01}}
+            onPress={() => {setOpen(true)}}
             >
-            <Text>Select Date</Text>
+            <Text>{dob.toDateString()}</Text>
             <Icon name="calendar" size={width*0.08} />
           </TouchableOpacity>
       <DatePicker
@@ -117,20 +163,25 @@ const Register = () => {
         dividerColor="#FF5F00"
         buttonColor="#FF5F00"
         open={open}
-        date={date}
+        date={dob}
+        
         onConfirm={(date) => {
+          setDob(new Date(date))
+          console.log(dob)
           setOpen(false)
-          setDate(date)
         }}
         onCancel={() => {
           setOpen(false)
         }}
       />
+      {/* {<Text>{new Date(dob)}</Text>} */}
+       {dobError && <ErrorComponent error={dobError} />}
         <View style={[styles.passwordInputRow,{borderColor:passwordError?'red':'#0004'}]}>
           <TextInput 
           placeholder="Password" 
+          editable={!signUpLoader}
           style={{ flex: 0.9 }} 
-          onChangeText={(text=>setPasswordError(text))}
+          onChangeText={(text=>setPassword(text))}
           secureTextEntry={showPassword} />
           <TouchableOpacity
             style={styles.eyeBtn}
@@ -143,8 +194,9 @@ const Register = () => {
         <View style={[styles.passwordInputRow,{borderColor:confirmPasswordError?'red':'#0004'}]}>
           <TextInput 
           placeholder="Confirm Password" 
+          editable={!signUpLoader}
           style={{ flex: 0.9 }} 
-          onChangeText={(text=>setConfirmPasswordError(text))}
+          onChangeText={(text=>setConfirmPassword(text))}
           secureTextEntry={showConfirmPassword} />
           <TouchableOpacity
             style={styles.eyeBtn}
@@ -156,9 +208,11 @@ const Register = () => {
         {confirmPasswordError && <ErrorComponent error={confirmPasswordError} />}
          
         <TouchableOpacity
+        disabled={signUpLoader}
         onPress={signUp}
         style={styles.loginBtn}>
-          <Text style={styles.loginText}>Sign Up</Text>
+          {signUpLoader? <ActivityIndicator size="small" color="#FFF" />:
+          <Text style={styles.loginText}>Sign Up</Text>}
         </TouchableOpacity>
         <View style={styles.orRow}>
           <View style={styles.hrView}></View>
@@ -168,7 +222,7 @@ const Register = () => {
         <View style={{ flexDirection: 'row', marginTop: 20 }}>
           <Text>Already have account?</Text>
           <TouchableOpacity style={{ paddingLeft: 8 }}
-            onPress={() => { navigation.navigate('Register') }}
+            onPress={() => {  navigation.navigate('Register') }}
           >
             <Text style={styles.signUpTxt}>Login</Text>
           </TouchableOpacity>
@@ -182,7 +236,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     height: height,
     width: width,
-    backgroundColor: '#F4FAEB',
+    backgroundColor:'#F4FAEB',
     display: "flex",
     flex: 1,
     alignItems: "center",
