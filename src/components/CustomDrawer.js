@@ -1,11 +1,14 @@
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity } from 'react-native';
 import React from 'react';
+import { useSelector, useDispatch } from 'react-redux';
 import { DrawerContentScrollView, DrawerItemList, DrawerItem } from '@react-navigation/drawer';
 import { useNavigation } from '@react-navigation/native';
+
 
 const { height, width } = Dimensions.get('screen');
 
 function CustomDrawer(props) {
+  const user = useSelector((state) => state.userReducer.user);
   const navigation = useNavigation();
 
   return (
@@ -66,8 +69,8 @@ function CustomDrawer(props) {
       <TouchableOpacity style={styles.userContainer}>
         <Image style={styles.userIcon} source={require('../assetes/images/user.png')} />  
         <View style={styles.userInfo}>
-          <Text style={styles.userName}>Emily</Text>
-          <Text style={styles.userEmail}>emily@gmail.com</Text>
+          <Text style={styles.userName}>{user?.name}</Text>
+          <Text style={styles.userEmail}>{user?.email}</Text>
         </View>
       </TouchableOpacity>
     </>

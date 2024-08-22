@@ -26,7 +26,7 @@ export const createUser = async (userData) => {
         },
     })
     .then(response => {
-        console.log('Response received:', response); // Log the response data
+        // console.log('Response received:', response); // Log the response data
         return response.data; // Return response data
     })
     .catch(error => {
@@ -54,7 +54,7 @@ export const loginUser = async (userData) => {
         },
     })
     .then(response => {
-        console.log('Response received:', response); // Log the response data
+        // console.log('Response received:', response); // Log the response data
         return response.data; // Return response data
     })
     .catch(error => {

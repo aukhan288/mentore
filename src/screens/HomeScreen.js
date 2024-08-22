@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, AsyncStorage } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
+import { useSelector, useDispatch } from 'react-redux';
 const images = [
   'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
   'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -11,11 +12,12 @@ const images = [
 ];
 const { height, width } = Dimensions.get('screen');
 const Home = () => {
+  const user = useSelector((state) => state.userReducer.user);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   return (
     <View style={styles.mainContainer}>
-      <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, Emily!</Text>
+      <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
       <View style={{ flex: 1 }}>
       <Carousel
             loop
