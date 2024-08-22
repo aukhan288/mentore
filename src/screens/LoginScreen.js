@@ -1,38 +1,66 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image,Alert, TouchableOpacity, Dimensions, StyleSheet, ImageBackground } from "react-native"
+import { View, Text, TextInput, Image,Alert, TouchableOpacity, Dimensions, StyleSheet, ImageBackground  } from "react-native"
+import { setData } from "../asyncStorage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
 import { loginUser } from '../services/userServices'
+import ErrorComponent from "../components/ErrorComponent";
+import Spinner from 'react-native-loading-spinner-overlay';
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { useSelector, useDispatch } from 'react-redux';
+import { setUser } from '../redux/userReducer'
 const { height, width } = Dimensions.get('screen');
 const Login = () => {
+  const user = useSelector((state) => state.userReducer.user);
+  const dispatch = useDispatch();
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   const [toggleCheckBox, setToggleCheckBox] = useState(false)
   const [loginLoader, setLoginLoader] = useState(false)
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
+  const [loginError, setloginError] = useState('')
+  const [emailError, setEmailError] = useState([])
+  const [passwordError, setPasswordError] = useState('')
 
 
 
-  const login = async () => {
+  const login = async (props) => {
     setLoginLoader(true)
-    // setEmailError(null)
-    // setPasswordError(null)
+    setloginError(null)
+    setEmailError(null)
+    setPasswordError(null)
     const result = await loginUser({ 
       email:email,
       password:password 
     });
     if (result.code==200) {
       setLoginLoader(false)
-      Alert.alert('User Login successfully')
-        navigation.navigate('DrawerStack')
+      console.log('ccccccccc',result?.data);
+      
+      dispatch(setUser(result?.data))
+      setData('@user',result?.data)
+        // navigation.navigate('DrawerStack')
         // Handle success (e.g., redirect, show success message, etc.)
     } else {
       setLoginLoader(false)
+     
+      
+      setLoginLoader(false)
+        if(result.status==401){
+          setloginError(result.data.error)
+        }
         if(result.status==422){
-          if(result.data.errors.hasOwnProperty('name')){
-            // setNameError(result.data.errors.name)
+          if(result.data.errors.hasOwnProperty('email')){
+            let emailError=[]
+            result.data.errors.email.map(m=>{
+              emailError.push(m)
+            })
+            setEmailError(emailError)
+          }
+          if(result.data.errors.hasOwnProperty('password')){
+            setPasswordError(result.data.errors.password)
           }
         }
     }
@@ -40,17 +68,27 @@ const Login = () => {
 
   return (
     <View style={styles.mainContainer}>
+     {/* <CustomLoaderComponent show={true}/> */}
+     {loginLoader && <Spinner
+          visible={loginLoader}
+          textContent={'Loading...'}
+          textStyle={styles.spinnerTextStyle}
+        />}
       <View style={{width:width,paddingHorizontal:width*0.04}}>
       <Image source={require('../assetes/images/logo.png')} 
       style={{marginTop:height*0.04, width:width*0.36, height:width*0.1}}
       />
       <Text style={{fontSize:width*0.07, color:'#1B2A56',marginTop:height*0.05}}>Login</Text>
       </View>
+      <Text>{loginLoader}</Text>
       <View style={styles.formView}>
+      {loginError && <ErrorComponent error={loginError} />}
+      {emailError && <ErrorComponent error={emailError} />}
+      {passwordError && <ErrorComponent error={passwordError} />}
         <TextInput 
           placeholder="Email" 
           keyboardType="email-address" 
-          style={styles.textInput} 
+          style={[styles.textInput,{marginTop:5}]} 
           onChangeText={(text)=>setEmail(text)}
           />
         <View style={styles.passwordInputRow}>
@@ -178,6 +216,9 @@ const styles = StyleSheet.create({
   hrView: {
     borderBottomWidth: 1,
     width: '40%'
-  }
+  },
+  spinnerTextStyle: {
+    color: '#FFF'
+  },
 })
 export default Login;
