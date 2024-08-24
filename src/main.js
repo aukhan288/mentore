@@ -1,23 +1,27 @@
 import React,{useEffect} from "react";
 import { Text } from "react-native";
+import { useSelector, useDispatch } from 'react-redux';
 import MainStackNavigation from "./navigations/MainStackNavigation"
-import Login from "./screens/LoginScreen";
-import DrawerNavigation from "./navigations/DrawerNavigation";
 import { Provider } from 'react-redux';
 import { store } from './redux/store';
-import { setUser } from './redux/userReducer'
-import SplashScreen from 'react-native-splash-screen'
+import { getData } from './asyncStorage';
+let us=null;
 const Main =()=>{
-    useEffect(()=>{
-        SplashScreen.show();
-        setTimeout(() => {
-            SplashScreen.hide();
-        }, 5000);
+    
+    useEffect( ()=>{
+        // SplashScreen.show();
+        getData('@user').then(u=>{
+        //   dispatch(setUser(u))
+       us=u;
+            }).catch(e=>{
+                SplashScreen.hide();
+          
+         })
     },[])
     return(
         // <DrawerNavigation/>
         <Provider store={store}>
-        <MainStackNavigation/>
+        <MainStackNavigation user={us}/>
         </Provider>
     )
 }

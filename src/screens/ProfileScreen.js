@@ -12,79 +12,42 @@ const images = [
   'https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg',
 ];
 const { height, width } = Dimensions.get('screen');
-const Home = (props) => {
+const Profile = () => {
   const user = useSelector((state) => state.userReducer.user);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   return (
     <View style={styles.mainContainer}>
-      <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
-      <View style={{ flex: 1 }}>
-      <Carousel
-            loop
-            width={width}
-            height={width / 2}
-            mode="parallax"
-            autoPlay={true}
-            data={images}
-            scrollAnimationDuration={1000}
-            pagingEnabled={true}
-            onSnapToItem={(index) => console.log('current index:', index)}
-            renderItem={({ item }) => (
-                <View style={styles.container}>
-                    <Image
-                        source={{ uri: item }}
-                        style={styles.image}
-                    />
-                </View>
-            )}
-        />
+        <View style={{display:'flex',flexDirection:'column',alignItems:'center', height:height*0.4, paddingTop:height*0.02}}>
+            <Image source={{uri:user?.image}} style={{borderWidth:2,borderColor:'#FF5F00',borderRadius:100, height:width*0.25,width:width*0.25}} />
+            <Text style={{color:'#FFF',fontWeight:'700',marginTop:5}}>{user?.name}</Text>
+            <Text style={{color:'#FF5F00'}}>{user?.email}</Text>
         </View>
-      <View style={{ width:width, paddingHorizontal:width*0.02, backgroundColor:'#FFF', height:height*0.6, bottom:0,position:'absolute', borderTopLeftRadius:25, borderTopRightRadius:25 }}>
-        <Text style={{marginTop:height*0.02, marginHorizontal:width*0.02, color:'#1C1B1F'}}>Orders</Text>
-        <View style={{padding:10, flexDirection:'row',justifyContent:'space-between'}}>
-          <TouchableOpacity
-          style={styles.orderBox}
-          >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
-           <Text style={{color:'#fff'}}>Total</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-          style={styles.orderBox}
-          >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
-           <Text style={{color:'#fff'}}>In Progress</Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-          style={styles.orderBox}
-          >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
-           <Text style={{color:'#fff'}}>Completed</Text>
-          </TouchableOpacity>
-        </View> 
-        <Text style={{marginTop:height*0.015, marginBottom:height*0.01, marginHorizontal:width*0.02, color:'#1C1B1F'}}>Current Orders</Text>
-        <TouchableOpacity style={{
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          overflow:'hidden',
-          elevation: 3,
-          backgroundColor:'#031D53',justifyContent:'center', alignItems:'center', borderRadius:15, paddingVertical:width*0.07, marginHorizontal:width*0.03}}>
-           <Image source={require('../assetes/images/box.png')} 
-           style={{marginBottom:height*0.025}}
-           />
-           <Text style={{color:'#FFFFFFE5'}}>Grab the Golden Opportunity, Order Now!</Text>
-           <Text style={{color:'#FFFFFFE5'}}>Once you place orders, they  will appear here.</Text>
+     
+      <View style={{ width:width, padding:width*0.04, backgroundColor:'#FFF', height:height*0.6, bottom:0,position:'absolute',  }}>
+        
+      <Text style={{fontWeight:'600',fontSize:width*0.05,color:'#000',marginTop:height*0.03}}>Account Settings</Text>
+
+      <TouchableOpacity
+      onPress={()=>{navigation.navigate('EditProfile')}}
+      style={{backgroundColor:'#F1EEEE', flexDirection:'row',justifyContent:'space-between',alignItems:'center', borderRadius:8, paddingVertical:15,paddingHorizontal:10, marginTop:height*0.03}}
+      >
+        <Text>Edit Profile</Text>
+        <Image source={require('../assetes/images/arrow-forward.png')} style={{width:30, height:30, backgroundColor:'#FFF', padding:10, borderRadius:8}} />
+      </TouchableOpacity>
+      <TouchableOpacity
+      style={{backgroundColor:'#F1EEEE', flexDirection:'row',justifyContent:'space-between',alignItems:'center', borderRadius:8, paddingVertical:15,paddingHorizontal:10, marginTop:height*0.03}}
+      >
+        <Text>Change Password</Text>
+        <Image source={require('../assetes/images/arrow-forward.png')} style={{width:30, height:30, backgroundColor:'#FFF', padding:10, borderRadius:8}} />
+      </TouchableOpacity>
+
+      <TouchableOpacity
+      style={{backgroundColor:'#FF5F00', flexDirection:'row',justifyContent:'center',alignItems:'center', borderRadius:8, paddingVertical:20,paddingHorizontal:10, marginTop:height*0.06}}
+      >
+        <Text style={{color:'#FFF',fontWeight:'600',fontSize:width*0.04}}>Logout</Text>
         </TouchableOpacity>
-        <TouchableOpacity
-        style={{backgroundColor:'#FF5F00', width:width*0.5, alignSelf:'center', marginTop:height*0.03,justifyContent:'center',alignItems:'center', paddingVertical:10, borderRadius:8}}
-        >
-          <Text style={{color:'#FFF'}}>Order Now</Text>
-        </TouchableOpacity>
+       
       </View>
       <View style={{ 
         backgroundColor:'#031D53', width:width*0.9, position:'absolute', paddingVertical:5, 
@@ -139,7 +102,6 @@ const Home = (props) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-        onPress={()=>props.navigation.navigate('Profile')}
        style={styles.bottomTabBtn}
         >
            <Image source={require('../assetes/images/profile.png')} 
@@ -187,4 +149,4 @@ const styles = StyleSheet.create({
     resizeMode: 'cover',
 },
 })
-export default Home;
+export default Profile;

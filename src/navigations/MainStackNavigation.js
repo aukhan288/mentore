@@ -6,34 +6,36 @@ import Register from '../screens/RegisterScreen';
 import ForgotPassword from '../screens/ForgotPasswordScreen';
 import DrawerNavigation from "./DrawerNavigation";
 import GetStarted from "../screens/GetStartedScreen"
-import Home from '../screens/HomeScreen';
+import Profile from '../screens/ProfileScreen';
+import EditProfile from '../screens/EditProfileScreen'
 import 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userReducer'
+import SplashScreen from 'react-native-splash-screen'
 
 import { getData } from '../asyncStorage';
 
-import { Provider } from 'react-redux';
-import { store } from '../redux/store';
+
 const Stack = createNativeStackNavigator();
 
 
 function MainStackNavigation(props) {
+  console.log('aaaaaa',props);
+  
   const user = useSelector((state) => state.userReducer.user);
   const dispatch = useDispatch();
   useEffect( ()=>{
-       getData('@user').then(u=>{
-          console.log('jjjjjjj',u);
-          dispatch(setUser(u))
-          
-       }).catch(e=>{
-        console.log(e);
-        
-       })
-  },[])
+    // SplashScreen.show();
+    // getData('@user').then(u=>{
+      dispatch(setUser(props?.user))
+      SplashScreen.hide();
+    //     }).catch(e=>{
+    //         SplashScreen.hide();
+      
+    //  })
+},[])
   return (
-    <Provider store={store}>
     <NavigationContainer>
       <Stack.Navigator>
         
@@ -72,6 +74,30 @@ function MainStackNavigation(props) {
             headerTitle: 'Forgot Password' 
           }} 
         />
+         <Stack.Screen 
+         name="Profile" 
+         component={Profile} 
+         options={{
+           headerShown: true,
+           headerStyle: { backgroundColor: '#031D53' }, 
+           headerTintColor: '#FFF', 
+           headerTitle: 'Profile',
+           
+         }} 
+       />
+         <Stack.Screen 
+         name="EditProfile" 
+         component={EditProfile} 
+        
+         options={{
+           headerShown: true,
+           headerStyle: { backgroundColor: '#031D53' }, 
+           headerTintColor: '#FFF', 
+           headerTitle: 'Edit Profile',
+           
+         }} 
+       />
+      
         </>
       }
         
@@ -80,7 +106,6 @@ function MainStackNavigation(props) {
        
       </Stack.Navigator>
     </NavigationContainer>
-    </Provider>
   );
 }
 

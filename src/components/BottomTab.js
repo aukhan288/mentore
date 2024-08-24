@@ -1,7 +1,9 @@
 import React from 'react'
 import {  View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
+import { useNavigation } from '@react-navigation/native';
 const { height, width } = Dimensions.get('screen');
 const  BottomTab=(props)=> {
+  const navigation = useNavigation();
     console.log('**************',props)
   return (
     <View style={{ 
@@ -57,6 +59,7 @@ const  BottomTab=(props)=> {
           />
         </TouchableOpacity>
         <TouchableOpacity
+        onPress={()=>navigation.navigate('Profile')}
        style={styles.bottomTabBtn}
         >
            <Image source={require('../assetes/images/profile.png')} 
