@@ -8,6 +8,7 @@ import DrawerNavigation from "./DrawerNavigation";
 import GetStarted from "../screens/GetStartedScreen"
 import Profile from '../screens/ProfileScreen';
 import EditProfile from '../screens/EditProfileScreen'
+import ChangePassword from '../screens/ChangePasswordScreen'
 import 'react-native-gesture-handler';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useSelector, useDispatch } from 'react-redux';
@@ -38,7 +39,7 @@ function MainStackNavigation(props) {
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        
+     
         {/* Authentication Stack */}
        {user?
         <Stack.Screen 
@@ -48,6 +49,17 @@ function MainStackNavigation(props) {
       />
        : 
        <>
+        {/* <Stack.Screen 
+         name="Profile" 
+         component={Profile} 
+         options={{
+           headerShown: true,
+           headerStyle: { backgroundColor: '#031D53' }, 
+           headerTintColor: '#FFF', 
+           headerTitle: 'Profile',
+           
+         }} 
+       /> */}
        <Stack.Screen 
           name="GetStarted" 
           component={GetStarted} 
@@ -74,7 +86,8 @@ function MainStackNavigation(props) {
             headerTitle: 'Forgot Password' 
           }} 
         />
-         <Stack.Screen 
+        
+        <Stack.Screen 
          name="Profile" 
          component={Profile} 
          options={{
@@ -85,7 +98,7 @@ function MainStackNavigation(props) {
            
          }} 
        />
-         <Stack.Screen 
+            <Stack.Screen 
          name="EditProfile" 
          component={EditProfile} 
         
@@ -96,7 +109,19 @@ function MainStackNavigation(props) {
            headerTitle: 'Edit Profile',
            
          }} 
-       />
+       /> 
+            <Stack.Screen 
+         name="ChangePassword" 
+         component={ChangePassword} 
+        
+         options={{
+           headerShown: true,
+           headerStyle: { backgroundColor: '#031D53' }, 
+           headerTintColor: '#FFF', 
+           headerTitle: 'Change Password',
+           
+         }} 
+       /> 
       
         </>
       }

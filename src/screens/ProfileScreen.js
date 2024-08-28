@@ -36,6 +36,7 @@ const Profile = () => {
         <Image source={require('../assetes/images/arrow-forward.png')} style={{width:30, height:30, backgroundColor:'#FFF', padding:10, borderRadius:8}} />
       </TouchableOpacity>
       <TouchableOpacity
+      onPress={()=>{navigation.navigate('ChangePassword')}}
       style={{backgroundColor:'#F1EEEE', flexDirection:'row',justifyContent:'space-between',alignItems:'center', borderRadius:8, paddingVertical:15,paddingHorizontal:10, marginTop:height*0.03}}
       >
         <Text>Change Password</Text>

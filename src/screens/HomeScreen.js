@@ -13,9 +13,10 @@ const images = [
 ];
 const { height, width } = Dimensions.get('screen');
 const Home = (props) => {
+  const navigation = useNavigation();
+  
   const user = useSelector((state) => state.userReducer.user);
   const [showPassword, setShowPassword] = useState(false);
-  const navigation = useNavigation();
   return (
     <View style={styles.mainContainer}>
       <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
@@ -139,7 +140,7 @@ const Home = (props) => {
           />
         </TouchableOpacity>
         <TouchableOpacity
-        onPress={()=>props.navigation.navigate('Profile')}
+        onPress={()=>navigation.navigate('Profile')}
        style={styles.bottomTabBtn}
         >
            <Image source={require('../assetes/images/profile.png')} 
