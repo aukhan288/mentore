@@ -13,10 +13,11 @@ export const createUser = async (userData) => {
             name:userData?.name,
             email:userData?.email,
             contact:userData?.contact,
-            country:userData?.country,
+            country_code:userData?.country_code,
             dob:userData?.dob,
+            plate_form:userData?.plate_form,
             password:userData?.password,
-            // confirmPassword:userData?.confirmPassword
+            // confirmPassword:userData?.password
     };
     console.log(data)
     return axios.post(`${BASE_URL}/signup`, data, {
@@ -30,6 +31,8 @@ export const createUser = async (userData) => {
         return response.data; // Return response data
     })
     .catch(error => {
+        console.log('error: ',error.response.data);
+        
         let err = {
             status:error.response.status,
             data:error.response.data

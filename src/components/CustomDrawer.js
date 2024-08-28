@@ -18,17 +18,6 @@ function CustomDrawer(props) {
           <Text style={styles.headerText}>Menu</Text>
         </View>
         <DrawerItemList {...props} />
-        <View style={{borderBottomWidth:1,borderBottomColor:'#e2e2e2', width:'100%'}}>
-        <DrawerItem
-          icon={() => <Image style={styles.icon} source={require('../assetes/images/add-assignment.png')} />}
-          label="Home"
-          marginHorizontal= {0}
-          borderBottomColor="#e2e2e2"
-          onPress={() => navigation.navigate('Home')}
-          style={{ flex:1, margin:0, width:'100%'}}
-          
-        />
-        </View>
         <DrawerItem
           icon={() => <Image style={styles.icon} source={require('../assetes/images/add-assignment.png')} />}
           label="New Assignment"
@@ -52,6 +41,11 @@ function CustomDrawer(props) {
         <DrawerItem
           icon={() => <Image style={styles.icon} source={require('../assetes/images/referral.png')} />}
           label="Referral"
+          onPress={() => navigation.navigate('Referral')} // Adjust navigation target
+        />
+        <DrawerItem
+          icon={() => <Image style={styles.icon} source={require('../assetes/images/referral.png')} />}
+          label="tools" 
           onPress={() => navigation.navigate('Referral')} // Adjust navigation target
         />
         <DrawerItem

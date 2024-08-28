@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity,Alert, Dimensions, StyleSheet, KeyboardAvoidingView, ActivityIndicator } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity,Alert, Dimensions, StyleSheet, KeyboardAvoidingView, ActivityIndicator,Platform } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import {CountryPicker} from "react-native-country-codes-picker";
@@ -30,10 +30,10 @@ const Register = (props) => {
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show, setShow] = useState(false);
-  const [countryCode, setCountryCode] = useState('🇵🇰 +92');
+  const [countryCode, setCountryCode] = useState(null);
   const navigation = useNavigation();
 
-  const signUp = async () => {
+  const signUp = async () => { 
     setSignUpLoader(true)
     setNameError(null)
     setEmailError(null)
@@ -45,8 +45,9 @@ const Register = (props) => {
       name:name,
       email:email,
       contact:contact,
-      country:'pakistan',
-      dob:dob,
+      country_code:countryCode,
+      plate_form:Platform?.OS,
+      dob:'1980-01-01',
       password:password,
       confirmPassword:confirmPassword 
     });
@@ -137,7 +138,7 @@ const Register = (props) => {
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
           console.log(item.flag);  
-          setCountryCode(item.flag+" "+item.dial_code);
+          setCountryCode(item.dial_code);
           setShow(false);
         }}
         style={{
