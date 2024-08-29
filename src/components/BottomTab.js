@@ -1,5 +1,5 @@
 import React from 'react'
-import {  View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from 'react-native'
+import {  View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, Linking } from 'react-native'
 import { useNavigation } from '@react-navigation/native';
 const { height, width } = Dimensions.get('screen');
 const  BottomTab=(props)=> {
@@ -12,13 +12,22 @@ const  BottomTab=(props)=> {
         }}
       >
         <TouchableOpacity
+           onPress={()=>navigation.navigate('Home')}
         style={styles.bottomTabBtn}
         >
+          {props?.screen=='Home'?
           <Image source={require('../assetes/images/home-active.png')} 
+          style={{width:width*0.06, height:width*0.06,}}
+        />
+          :
+          <Image source={require('../assetes/images/home.png')} 
             style={{width:width*0.06, height:width*0.06,}}
           />
+          } 
         </TouchableOpacity>
         <TouchableOpacity
+        onPress={()=>Linking.openURL(`tel:${'03124676603'}`)}
+
         style={styles.bottomTabBtn}
         >
           <Image source={require('../assetes/images/contacts.png')} 
@@ -52,6 +61,7 @@ const  BottomTab=(props)=> {
         </TouchableOpacity>
         </View>
         <TouchableOpacity
+        onPress={()=>Linking.openURL('whatsapp://send?text=hello&phone=03124676603')}
         style={styles.bottomTabBtn}
         >
      <Image source={require('../assetes/images/whatsapp.png')} 
@@ -62,9 +72,17 @@ const  BottomTab=(props)=> {
         onPress={()=>navigation.navigate('Profile')}
        style={styles.bottomTabBtn}
         >
-           <Image source={require('../assetes/images/profile.png')} 
-            style={{width:width*0.06, height:width*0.06}}
+          
+
+       {props?.screen=='Profile'?
+          <Image source={require('../assetes/images/profile-active.png')} 
+          style={{width:width*0.06, height:width*0.06,}}
+        />
+          :
+          <Image source={require('../assetes/images/profile.png')} 
+            style={{width:width*0.06, height:width*0.06,}}
           />
+          }
         </TouchableOpacity>
       </View>
   )
