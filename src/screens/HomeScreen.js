@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import BottomTab from "../components/BottomTab";
 const images = [
   'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
   'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -87,67 +88,7 @@ const Home = (props) => {
           <Text style={{color:'#FFF'}}>Order Now</Text>
         </TouchableOpacity>
       </View>
-      <View style={{ 
-        backgroundColor:'#031D53', width:width*0.9, position:'absolute', paddingVertical:5, 
-        bottom:0, alignSelf:'center',borderRadius:width*0.02, marginBottom:height*0.01, display:'flex', flexDirection:'row',justifyContent:'space-around'   
-        }}
-      >
-        <TouchableOpacity
-        style={styles.bottomTabBtn}
-        >
-          <Image source={require('../assetes/images/home-active.png')} 
-            style={{width:width*0.06, height:width*0.06,}}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-        style={styles.bottomTabBtn}
-        >
-          <Image source={require('../assetes/images/contacts.png')} 
-            style={{width:width*0.06, height:width*0.06}}
-          />
-        </TouchableOpacity>
-        <View style={{
-           flex:2,
-           alignItems:'center',
-           justifyContent:'center',
-           padding:10
-        }}>
-        <TouchableOpacity
-        style={{
-          borderWidth:3,
-          borderColor:'#FFF',
-          borderRadius:100,alignItems:'center',
-          justifyContent:'center',
-          height:width*0.15,
-          width:width*0.15,
-          backgroundColor:'#FF5F00',
-          position:'absolute',
-          alignSelf:'center',
-          top:-26,
-          marginHorizontal:'auto'         
- 
-        }}
-        >
-          <Image source={require('../assetes/images/plus.png')} style={{height:width*0.06,width:width*0.06}} />
-          {/* <Icon name="plus" color={'#FFF'} size={30} /> */}
-        </TouchableOpacity>
-        </View>
-        <TouchableOpacity
-        style={styles.bottomTabBtn}
-        >
-     <Image source={require('../assetes/images/whatsapp.png')} 
-            style={{width:width*0.06, height:width*0.06}}
-          />
-        </TouchableOpacity>
-        <TouchableOpacity
-        onPress={()=>navigation.navigate('Profile')}
-       style={styles.bottomTabBtn}
-        >
-           <Image source={require('../assetes/images/profile.png')} 
-            style={{width:width*0.06, height:width*0.06}}
-          />
-        </TouchableOpacity>
-      </View>
+    <BottomTab screen={'Home'}/>
     </View>
   )
 }
