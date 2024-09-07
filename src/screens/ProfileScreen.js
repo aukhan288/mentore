@@ -14,7 +14,7 @@ const images = [
 ];
 const { height, width } = Dimensions.get('screen');
 const Profile = (props) => {
-  const user = useSelector((state) => state.userReducer.user);
+  const user = useSelector((state) => state.userReducer.userInfo.user);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   return (

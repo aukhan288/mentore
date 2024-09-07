@@ -6,6 +6,7 @@ import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from '../screens/HomeScreen';
 import Orders from '../screens/OrdersScreen';
 import Profile from '../screens/ProfileScreen';
+
 import CustomDrawerHeader from '../components/CustomDrawerHeader';
 import NewAssignment from '../screens/NewAssignmentScreen';
 import Wallet from '../screens/WalletScreen';
@@ -32,7 +33,7 @@ const imageMap = {
 };
 
 const CustomDrawerItem = ({ label, onPress, isActive }) => {
-  const user = useSelector((state) => state.userReducer.user);
+  const user = useSelector((state) => state.userReducer.userInfo.user);
   const image = imageMap[label] || require('../assetes/images/home.png'); // Fallback image
 
   return (
@@ -146,6 +147,7 @@ const DrawerNavigation = () => (
           headerTintColor: '#031D53',
         }}
       />
+      
     </Drawer.Navigator>
   </>
 );

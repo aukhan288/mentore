@@ -41,6 +41,7 @@ const  BottomTab=(props)=> {
            padding:10
         }}>
         <TouchableOpacity
+        onPress={()=>navigation.navigate('Add Order')}
         style={{
           borderWidth:3,
           borderColor:'#FFF',

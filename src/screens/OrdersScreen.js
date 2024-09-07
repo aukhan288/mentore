@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, FlatList,useWindowDimensions } from "react-native"
 import { TabView, SceneMap,TabBar } from 'react-native-tab-view';
+import Icon from 'react-native-vector-icons/FontAwesome';
+
 const { height, width } = Dimensions.get('screen');
 const DATA = [
     {
@@ -17,28 +19,64 @@ const DATA = [
     },
   ];
 const Item = ({title}) => (
-    <View>
-        <Text>Heading</Text>
+  
+  <View style={{marginTop:height*0.02}}>
+      
+        <Text style={{marginHorizontal:width*0.04}}>Heading</Text>
         <View style={styles.item}>
-      <Text style={styles.title}>{title}</Text>
+        <View style={{ flexDirection:'row', justifyContent:'space-between' }}>
+        <Text style={{color:'#031D53', fontWeight:'400', fontSize:width*0.04}}>LA56120</Text>
+         {/* <Icon name='check-circle' size={width*0.06} color='#09C126'/> */}
+         <Image source={require('../assetes/images/pending.png')} style={{height:width*0.05, width:width*0.05}} />
+        </View>  
+      <View style={styles.itemDetailRow}>
+        <Text>Subject Area: </Text>
+        <Text>Discrete Mathematics </Text>
+      </View>
+      <View style={styles.itemDetailRow}>
+        <Text>Service: </Text>
+        <Text>Coursework </Text>
+      </View>
+      <View style={styles.itemDetailRow}>
+        <Text>University Name: </Text>
+        <Text>Glasgow Caledonian University</Text>
+      </View>
+      <View style={styles.itemDetailRow}>
+        <Text>Wordcount: </Text>
+        <Text>3000</Text>
+      </View>
+      <View style={styles.itemDetailRow}>
+        <Text>Deadline: </Text>
+        <Text>25/09/2024</Text>
+      </View>
     </View>
     </View>
   );
 const Orders = (props) => {
+  console.log(props);
+  
     const FirstRoute = () => (
+        <View>
         <FlatList
         data={DATA}
         renderItem={({item}) => <Item title={item.title} />}
         keyExtractor={item => item.id}
       />
+         <TouchableOpacity style={{backgroundColor:'#FF5F00', marginHorizontal:width*0.04, paddingVertical:15, marginTop:height*0.1}}>
+      <Text style={{textAlign:'center', color:'#FFF'}}>Order Now</Text>
+    </TouchableOpacity>
+      </View>
       );
       
       const SecondRoute = () => (
+        
         <FlatList
         data={DATA}
         renderItem={({item}) => <Item title={item.title} />}
         keyExtractor={item => item.id}
       />
+   
+      
       );
       
       const renderScene = SceneMap({
@@ -75,7 +113,7 @@ const Orders = (props) => {
       };
       
   return (
-      <View style={styles.mainContainer}>
+    <View style={styles.mainContainer}>
       <TabView
      renderTabBar={props => <CustomTabBar {...props} />}
       navigationState={{ index, routes }}
@@ -83,6 +121,7 @@ const Orders = (props) => {
       onIndexChange={setIndex}
       initialLayout={{ width: width }}
     />
+      
       </View> 
   )
 }
@@ -99,7 +138,7 @@ const styles = StyleSheet.create({
   item: {
     backgroundColor: '#FFF',
     padding: 20,
-    marginTop:height*0.04,
+    marginTop:height*0.01,
     marginBottom: 8,
     marginHorizontal: 16,
     overflow:'hidden',
@@ -131,5 +170,8 @@ const styles = StyleSheet.create({
   label: {
     fontSize: width*0.04,
   },
+  itemDetailRow:{
+    flexDirection:'row'
+  }
 })
 export default Orders;
