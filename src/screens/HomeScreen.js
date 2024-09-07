@@ -6,6 +6,7 @@ import Carousel from 'react-native-reanimated-carousel';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomTab from "../components/BottomTab";
+import ButtonComponent from "../components/ButtonComponent";
 const images = [
   'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
   'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -16,7 +17,9 @@ const { height, width } = Dimensions.get('screen');
 const Home = (props) => {
   const navigation = useNavigation();
   
-  const user = useSelector((state) => state.userReducer.user);
+  const user = useSelector((state) => state.userReducer.userInfo.user);
+
+  
   const [showPassword, setShowPassword] = useState(false);
   return (
     <View style={styles.mainContainer}>
@@ -64,29 +67,20 @@ const Home = (props) => {
            <Text style={{color:'#fff'}}>Completed</Text>
           </TouchableOpacity>
         </View> 
-        <Text style={{marginTop:height*0.015, marginBottom:height*0.01, marginHorizontal:width*0.02, color:'#1C1B1F'}}>Current Orders</Text>
-        <TouchableOpacity style={{
-          shadowColor: "#000",
-          shadowOffset: {
-            width: 0,
-            height: 1,
-          },
-          shadowOpacity: 0.25,
-          shadowRadius: 3.84,
-          overflow:'hidden',
-          elevation: 3,
-          backgroundColor:'#031D53',justifyContent:'center', alignItems:'center', borderRadius:15, paddingVertical:width*0.07, marginHorizontal:width*0.03}}>
-           <Image source={require('../assetes/images/box.png')} 
-           style={{marginBottom:height*0.025}}
-           />
-           <Text style={{color:'#FFFFFFE5'}}>Grab the Golden Opportunity, Order Now!</Text>
-           <Text style={{color:'#FFFFFFE5'}}>Once you place orders, they  will appear here.</Text>
-        </TouchableOpacity>
-        <TouchableOpacity
-        style={{backgroundColor:'#FF5F00', width:width*0.5, alignSelf:'center', marginTop:height*0.03,justifyContent:'center',alignItems:'center', paddingVertical:10, borderRadius:8}}
-        >
-          <Text style={{color:'#FFF'}}>Order Now</Text>
-        </TouchableOpacity>
+        
+      <ButtonComponent {...props} />
+  <View style={{flexDirection:'column'}}>
+  <TouchableOpacity
+      onPress={()=>navigation.navigate('WebViewScreen')}
+      style={{width:width,justifyContent:'center',alignItems:'center', marginVertical:height*0.04}}>
+        <Image source={require('../assetes/images/toolBanner.png')} style={{resizeMode:'contain'}}/>
+      </TouchableOpacity>
+      <TouchableOpacity
+      onPress={()=>navigation.navigate('WebViewScreen')}
+      style={{width:width,justifyContent:'center',alignItems:'center', marginVertical:height*0.04}}>
+        <Image source={require('../assetes/images/toolBanner.png')} style={{resizeMode:'contain'}}/>
+      </TouchableOpacity>
+  </View>
       </View>
     <BottomTab screen={'Home'}/>
     </View>

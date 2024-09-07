@@ -41,7 +41,7 @@ const Login = () => {
       
       dispatch(setUser(result?.data))
       setData('@user',result?.data)
-        // navigation.navigate('DrawerStack')
+        navigation.navigate('DrawerStack')
         // Handle success (e.g., redirect, show success message, etc.)
     } else {
       setLoginLoader(false)

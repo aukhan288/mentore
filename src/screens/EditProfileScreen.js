@@ -12,10 +12,11 @@ import { CountryPicker } from "react-native-country-codes-picker";
 
 const { height, width } = Dimensions.get('screen');
 const EditProfile = (props) => {
-  const user = useSelector((state) => state.userReducer.user);
+  const user = useSelector((state) => state.userReducer.userInfo.user);
   const [updatedUserImage, setUpdatedUserImage] = useState(null)
   const [updatedUserName, setUpdatedUserName] = useState(null)
   const [updatedUserEmail, setUpdatedUserEmail] = useState(null)
+  const [updatedUserContact, setUpdatedUserContact] = useState(null)
   const [signUpLoader, setSignUpLoader] = useState(false)
 
 
@@ -26,6 +27,8 @@ const EditProfile = (props) => {
     setUpdatedUserImage(user?.image)
     setUpdatedUserName(user?.name)
     setUpdatedUserEmail(user?.email)
+    setCountryCode(user?.country_code)
+    setUpdatedUserContact(user?.contact)
   }, [user])
 
   const discardChanges = () => {
@@ -135,7 +138,8 @@ const EditProfile = (props) => {
                 keyboardType="phone-pad"
                 editable={!signUpLoader}
                 placeholder="Phone Number"
-                onChangeText={(text) => setContact(text)}
+                value={updatedUserContact}
+                onChangeText={(text) => setUpdatedUserContact(text)}
               />
           
               <CountryPicker
