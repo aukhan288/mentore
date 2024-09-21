@@ -15,7 +15,6 @@ const Stack = createNativeStackNavigator();
 function AuthStackNavigation() {
   
   return (
-    <NavigationContainer>
       <Stack.Navigator>
             <Stack.Screen
               name="GetStarted"
@@ -64,7 +63,6 @@ function AuthStackNavigation() {
             />
         
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }
 

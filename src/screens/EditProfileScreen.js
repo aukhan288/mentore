@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, TextInput } from "react-native"
+import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, TextInput, Platform } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
@@ -9,6 +9,7 @@ import { COLORS } from "../config";
 import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
 import { CountryPicker } from "react-native-country-codes-picker";
+import { updateUser } from "../services/userServices";
 
 const { height, width } = Dimensions.get('screen');
 const EditProfile = (props) => {
@@ -19,15 +20,18 @@ const EditProfile = (props) => {
   const [updatedUserContact, setUpdatedUserContact] = useState(null)
   const [signUpLoader, setSignUpLoader] = useState(false)
 
+console.log('***********',user);
 
   const [show, setShow] = useState(false);
-  const [countryCode, setCountryCode] = useState(null);
+  const [updatedCountryCode, setUpdatedCountryCode] = useState(null);
+  const [updatedCountryFlag, setUpdatedCountryFlag] = useState(null);
 
   useEffect(() => {
     setUpdatedUserImage(user?.image)
     setUpdatedUserName(user?.name)
     setUpdatedUserEmail(user?.email)
-    setCountryCode(user?.country_code)
+    setUpdatedCountryFlag(user?.country_flag)
+    setUpdatedCountryCode(user?.country_code)
     setUpdatedUserContact(user?.contact)
   }, [user])
 
@@ -39,27 +43,56 @@ const EditProfile = (props) => {
     })
   }
   const saveChanges = async () => {
-    const formData = new FormData();
+    //  updateUser({
+    //     id:user?.id,
+    //     name:updatedUserName,
+    //     countryFlag:updatedCountryFlag,
+    //     countryCode:updatedCountryCode,
+    //     contact:updatedUserContact,
+    //     image:updatedUserImage,
+    //     plate_form:Platform?.OS
+    //  },user?.token)
 
-    formData.append('image', {
-      uri: updatedUserImage,
-      type: 'image/jpeg',
-      name: 'photo.jpg',
-    });
-
-    try {
-      const response = await axios.post('http://127.0.0.1:8000/api/image-upload', formData, {
-        headers: {
-          'Accept': 'application/json',
-          'Content-Type': 'multipart/form-data',
-          'Authorization': `Bearer ${user?.access_token}`
-        },
-      });
-
-      console.log('Upload successful:', response.data);
-    } catch (error) {
-      console.error('Error uploading image:', error.response ? error.response.data : error.message);
-    }
+     const data = new FormData();
+     
+         // Append form data
+         data.append('name', updatedUserName || '');
+         data.append('country_flag', updatedCountryFlag || '');
+         data.append('country_code', updatedCountryCode || '');
+         data.append('contact', updatedUserContact || '');
+         data.append('plate_form', Platform?.OS || '');
+     
+     
+             data.append('image', {
+              uri: updatedUserImage,
+              type: 'image/jpeg', // or the actual type of the file
+              name: 'image.jpg' // or the actual file name
+          }
+        );
+     
+         try {
+             const response = await axios.put(
+                 `http://127.0.0.1:8000/api/profile-update/${user?.id}`,
+                 data,
+                 {
+                     headers: {
+                         'Accept':'application/json',
+                         'Content-Type': 'multipart/form-data',
+                         'Authorization': `Bearer ${user?.token}`,
+                     },
+                 }
+             );
+     
+             console.log('Response received:', response.data);
+             return response.data;
+         } catch (error) {
+             console.error('Error:', error.response ? error.response.data : error.message);
+             let err = {
+                 status: error.response ? error.response.status : 'Unknown',
+                 data: error.response ? error.response.data : error.message,
+             };
+             return Promise.reject(err);
+         }
   };
 
 
@@ -79,7 +112,7 @@ const EditProfile = (props) => {
 
       // Get the cropped image URI
       const imageUri = result.path;
-      console.log(result);
+      console.log('mmmmmmmmm',result);
       setUpdatedUserImage(imageUri)
       console.log(imageUri);
     } catch (error) {
@@ -131,7 +164,7 @@ const EditProfile = (props) => {
                 <Text style={{
                   verticalAlign: 'middle'
                 }}>
-                  {countryCode}
+                  {updatedCountryFlag+updatedCountryCode}
                 </Text>
               </TouchableOpacity>
               <TextInput
@@ -145,11 +178,11 @@ const EditProfile = (props) => {
               <CountryPicker
               inputPlaceholder="Select"
                 show={show}
-                // initialState={()=>{setCountryCode('+380')}}
+                initialState={updatedCountryFlag}
                 // when picker button press you will get the country object with dial code
                 pickerButtonOnPress={(item) => {
-                  console.log(item.flag);
-                  setCountryCode(item.dial_code);
+                  setUpdatedCountryFlag(item.flag);
+                  setUpdatedCountryCode(item.dial_code);
                   setShow(false);
                 }}
                 style={{

@@ -45,11 +45,13 @@ const Wallet = (props) => {
   const [showBalence, setShowBalence]=useState(false)
   const navigation = useNavigation();
   const [paymentOptionModal,setPaymentOptionModal] = useState(false)
-  const [balance,setBalance] = useState(0.0)
+  const [balance,setBalance] = useState('0.00')
 
   useEffect(()=>{
-    userWallet(userInfo?.user?.id,userInfo?.token)
+    userWallet(userInfo?.user?.id,userInfo?.user?.token)
     .then(res=>{
+      console.log(res);
+      
       setBalance(res?.wallet?.balance)
     })
   },[isFocused])
