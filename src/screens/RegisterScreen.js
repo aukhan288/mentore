@@ -31,6 +31,7 @@ const Register = (props) => {
   const [showPassword, setShowPassword] = useState(false);
   const [show, setShow] = useState(false);
   const [countryCode, setCountryCode] = useState(null);
+  const [countryFlag, setCountryFlag] = useState(null);
   const navigation = useNavigation();
 
   const signUp = async () => { 
@@ -46,11 +47,14 @@ const Register = (props) => {
       email:email,
       contact:contact,
       country_code:countryCode,
+      country_flag:countryFlag,
       plate_form:Platform?.OS,
       dob:'1980-01-01',
       password:password,
       confirmPassword:confirmPassword 
     });
+    console.log("************",result);
+    
     if (result.code==201) {
       setSignUpLoader(false)
       Alert.alert('User created successfully')
@@ -124,7 +128,7 @@ const Register = (props) => {
         <Text style={{
             verticalAlign:'middle'
         }}>
-            {countryCode}
+            {countryFlag+countryCode}
         </Text>
       </TouchableOpacity>
       <TextInput 
@@ -137,7 +141,7 @@ const Register = (props) => {
         show={show}
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
-          console.log(item.flag);  
+          setCountryFlag(item.flag);
           setCountryCode(item.dial_code);
           setShow(false);
         }}

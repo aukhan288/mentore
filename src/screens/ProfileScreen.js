@@ -2,16 +2,9 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, ImageBackground, Dimensions, StyleSheet,  } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
-import Carousel from 'react-native-reanimated-carousel';
 import { useSelector, useDispatch } from 'react-redux';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomTab from "../components/BottomTab";
-const images = [
-  'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
-  'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
-  'https://media.istockphoto.com/id/2021524810/photo/business-people-enhance-your-cyber-security-with-cutting-edge-solutions-protect-data-prevent.jpg?s=2048x2048&w=is&k=20&c=55FpNeV9naNFWX_jcwqBSMstdEAxNjDx51tMI6OPvU4=',
-  'https://farm9.staticflickr.com/8295/8007075227_dc958c1fe6_z_d.jpg',
-];
+
 const { height, width } = Dimensions.get('screen');
 const Profile = (props) => {
   const user = useSelector((state) => state.userReducer.userInfo.user);

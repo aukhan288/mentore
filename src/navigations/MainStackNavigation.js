@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
+
 import DrawerNavigation from "./DrawerNavigation";
 import EditProfile from '../screens/EditProfileScreen';
 import ChangePassword from '../screens/ChangePasswordScreen';
@@ -10,9 +9,10 @@ import StripeCard from '../screens/StripeCardScreen';
 import { useSelector, useDispatch } from 'react-redux';
 import { setUser } from '../redux/userReducer';
 
-
-
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 const Stack = createNativeStackNavigator();
+
+
 
 function MainStackNavigation(props) {
   const dispatch = useDispatch();
@@ -23,7 +23,6 @@ function MainStackNavigation(props) {
 
 
   return (
-    <NavigationContainer>
       <Stack.Navigator>
             <Stack.Screen
               name="DrawerStack"
@@ -72,7 +71,6 @@ function MainStackNavigation(props) {
    
       
       </Stack.Navigator>
-    </NavigationContainer>
   );
 }
 

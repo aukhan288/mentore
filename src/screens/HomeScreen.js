@@ -34,7 +34,7 @@ const Home = (props) => {
             data={images}
             scrollAnimationDuration={1000}
             pagingEnabled={true}
-            onSnapToItem={(index) => console.log('current index:', index)}
+            // onSnapToItem={}
             renderItem={({ item }) => (
                 <View style={styles.container}>
                     <Image
