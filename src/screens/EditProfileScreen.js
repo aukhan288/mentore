@@ -9,7 +9,8 @@ import { COLORS } from "../config";
 import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { updateUser } from "../services/userServices";
+import { updateUser, BASE_URL } from "../services/userServices";
+import { setData } from '../asyncStorage'
 
 const { height, width } = Dimensions.get('screen');
 const EditProfile = (props) => {
@@ -27,7 +28,7 @@ console.log('***********',user);
   const [updatedCountryFlag, setUpdatedCountryFlag] = useState(null);
 
   useEffect(() => {
-    setUpdatedUserImage(user?.image)
+    setUpdatedUserImage(BASE_URL+user?.image)
     setUpdatedUserName(user?.name)
     setUpdatedUserEmail(user?.email)
     setUpdatedCountryFlag(user?.country_flag)
@@ -71,8 +72,8 @@ console.log('***********',user);
         );
      
          try {
-             const response = await axios.put(
-                 `http://127.0.0.1:8000/api/profile-update/${user?.id}`,
+             const response = await axios.post(
+                 `https://app.assignmentmentor.co.uk/mentore-api/public/api/profile-update/${user?.id}`,
                  data,
                  {
                      headers: {
@@ -82,8 +83,13 @@ console.log('***********',user);
                      },
                  }
              );
-     
-             console.log('Response received:', response.data);
+           
+           
+             
+             setUser(response?.data?.data?.user)
+             console.log(user);
+             
+             
              return response.data;
          } catch (error) {
              console.error('Error:', error.response ? error.response.data : error.message);

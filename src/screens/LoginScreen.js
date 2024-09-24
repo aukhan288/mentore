@@ -40,7 +40,7 @@ const Login = () => {
       console.log('ccccccccc',result?.data);
       
       dispatch(setUser(result?.data))
-      setData('@user',result?.data)
+      setData('@token',result?.data?.token)
         navigation.navigate('DrawerStack')
         // Handle success (e.g., redirect, show success message, etc.)
     } else {
