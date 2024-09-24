@@ -1,12 +1,13 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet,  } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
 import { useSelector, useDispatch } from 'react-redux';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomTab from "../components/BottomTab";
 import ButtonComponent from "../components/ButtonComponent";
+import { getOrdersCounts } from "../services/userServices"
 const images = [
   'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
   'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -16,11 +17,26 @@ const images = [
 const { height, width } = Dimensions.get('screen');
 const Home = (props) => {
   const navigation = useNavigation();
+  const isFocused = useIsFocused();
   
   const user = useSelector((state) => state.userReducer.userInfo.user);
-
+  console.log(user?.token);
   
+  const [total, setTotal]=useState(0)
+  const [inprogres, setInprogres]=useState(0)
+  const [completed, setCompleted]=useState(0)
   const [showPassword, setShowPassword] = useState(false);
+
+  useEffect(()=>{
+    getOrdersCounts(user?.token)
+    .then(res=>{
+      if(res?.succes){
+        setTotal(res?.data?.total)
+        setInprogres(res?.data?.inprogress)
+        setCompleted(res?.data?.completed)
+      }
+    })
+  },[isFocused])
   return (
     <View style={styles.mainContainer}>
       <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
@@ -51,19 +67,21 @@ const Home = (props) => {
           <TouchableOpacity
           style={styles.orderBox}
           >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
+           <Text style={{color:'#fff', fontSize:width*0.1}}>{total.toString()}</Text>
            <Text style={{color:'#fff'}}>Total</Text>
           </TouchableOpacity>
           <TouchableOpacity
           style={styles.orderBox}
           >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
+            {console.log(inprogres)
+            }
+           <Text style={{color:'#fff', fontSize:width*0.1}}>{inprogres+""}</Text>
            <Text style={{color:'#fff'}}>In Progress</Text>
           </TouchableOpacity>
           <TouchableOpacity
           style={styles.orderBox}
           >
-           <Text style={{color:'#fff', fontSize:width*0.1}}>O</Text>
+           <Text style={{color:'#fff', fontSize:width*0.1}}>{completed.toString()}</Text>
            <Text style={{color:'#fff'}}>Completed</Text>
           </TouchableOpacity>
         </View> 

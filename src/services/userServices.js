@@ -3,9 +3,11 @@
 import axios from 'axios';
 
 // Base URL for your API
-const BASE_URL = 'https://app.assignmentmentor.co.uk/public/api';
+const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
+const API = 'public/api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
+export {BASE_URL};
 // Function to send a POST request
 export const createUser = async (userData) => {
     console.log('Sending data:', JSON.stringify(userData)); // Log the data being sent
@@ -22,7 +24,7 @@ export const createUser = async (userData) => {
             // confirmPassword:userData?.password
     };
     console.log(data)
-    return axios.post(`${BASE_URL}/signup`, data, {
+    return axios.post(`${BASE_URL+API}/signup`, data, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -48,11 +50,10 @@ export const updateUser = async (userData,token) => {
 console.log(userData);
 
     // Append form data
-    data.append('name', userData?.name || '');
-    data.append('country_flag', userData?.countryFlag || '');
-    data.append('country_code', userData?.countryCode || '');
-    data.append('contact', userData?.contact || '');
-    data.append('plate_form', userData?.plate_form || '');
+    userData.has('name') && data.append('name', userData?.name || '');
+    userData.has('country_code') && data.append('country_code', userData?.countryCode || '');
+    userData.has('contact') && data.append('contact', userData?.contact || '');
+    userData.has('plate_form') && data.append('plate_form', userData?.plate_form || '');
 
     // Check if updatedUserImage is available and append it
     if (userData?.updatedUserImage) {
@@ -68,7 +69,7 @@ console.log(userData);
 
     try {
         const response = await axios.put(
-            `${BASE_URL}/profile-update/${userData?.id}`,
+            `${BASE_URL+API}/profile-update/${userData?.id}`,
             data,
             {
                 headers: {
@@ -111,7 +112,7 @@ export const attachmentUpload = async (attachment, token) => {
 
     try {
         const response = await axios.post(
-            `${BASE_URL}/file-upload`,
+            `${BASE_URL+API}/file-upload`,
             data,
             {
                 headers: {
@@ -144,7 +145,7 @@ export const loginUser = async (userData) => {
             // confirmPassword:userData?.confirmPassword
     };
     console.log('***********',data)
-    return axios.post(`${BASE_URL}/login`, data, {
+    return axios.post(`${BASE_URL+API}/login`, data, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -166,7 +167,7 @@ export const loginUser = async (userData) => {
 export const userWallet = async (uid,token) => {
 console.log('ggggggg',uid, token);
 
-    return axios.get(`${BASE_URL}/user-wallet/${uid}`,  {
+    return axios.get(`${BASE_URL+API}/user-wallet/${uid}`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -189,7 +190,7 @@ console.log('ggggggg',uid, token);
 };
 export const serviceList = async (token) => {
 
-    return axios.get(`${BASE_URL}/serviceList`,  {
+    return axios.get(`${BASE_URL+API}/serviceList`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -210,9 +211,10 @@ export const serviceList = async (token) => {
     });
     
 };
-export const orderList = async (uid,status, token) => {
+export const orderList = async (uid,isCompleted, token) => {
+console.log('aaaaaaaaa', uid,isCompleted, token);
 
-    return axios.get(`${BASE_URL}/assignmentList/${uid}/${status}`,  {
+    return axios.get(`${BASE_URL+API}/assignmentList/${uid}/${isCompleted}`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -235,7 +237,7 @@ export const orderList = async (uid,status, token) => {
 };
 export const assignmentStatusList = async (token) => {
 
-    return axios.get(`${BASE_URL}/assignmentStatusList`,  {
+    return axios.get(`${BASE_URL+API}/assignmentStatusList`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -259,7 +261,7 @@ export const assignmentStatusList = async (token) => {
 export const policy = async (policy, token) => {
 console.log(policy, token)
 
-    return axios.get(`${BASE_URL}/policy/${policy}`,  {
+    return axios.get(`${BASE_URL+API}/policy/${policy}`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -306,7 +308,7 @@ export const submitOrder = async (assignmentData,token) => {
     data.specificInstruction=assignmentData?.specificInstruction
     console.log('Sending data:', JSON.stringify(data)); // Log the data being sent
   
-    return axios.post(`${BASE_URL}/submit-assignment`, data, {
+    return axios.post(`${BASE_URL+API}/submit-assignment`, data, {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -328,3 +330,29 @@ export const submitOrder = async (assignmentData,token) => {
     });
     
 };
+
+export const getOrdersCounts = async (token) => {
+ 
+    
+        return axios.get(`${BASE_URL+API}/assignmentCounts`,  {
+            headers: {
+                'Accept': 'application/json',
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
+            },
+        })
+        .then(response => {
+            console.log('Response received:', response?.data); // Log the response data
+            return response.data; // Return response data
+        })
+        .catch(error => {
+            console.log('error received:', error);
+            let err = {
+                status:error.response.status,
+                data:error.response.data
+            }
+            return err; // Return error details as rejected promise
+        });
+        
+    };
+

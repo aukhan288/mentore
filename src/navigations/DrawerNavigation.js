@@ -15,6 +15,7 @@ import Referral from '../screens/ReferralScreen';
 import Policy from '../screens/PolicyScreen';
 import Support from '../screens/SupportScreen';
 import { useSelector, useDispatch } from 'react-redux';
+import { BASE_URL } from '../services/userServices';
 
 const { height, width } = Dimensions.get('screen');
 const Drawer = createDrawerNavigator();
@@ -42,7 +43,7 @@ const CustomDrawerItem = ({ label, onPress, isActive }) => {
       style={[styles.drawerItemProfile, isActive && styles.drawerItemActive]}
       onPress={onPress}
     >
-      <Image source={image} style={{height:width*0.14, width:width*0.14}} />
+      <Image source={{ uri:BASE_URL+user?.image }} style={{height:width*0.14, width:width*0.14, borderRadius:100}} />
       <View>
       <Text style={[styles.drawerItemActive,{color:'#FF5F00',fontWeight:'bold',fontSize:width*0.04}]}>
       {user?.name}
