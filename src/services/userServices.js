@@ -4,13 +4,22 @@ import axios from 'axios';
 
 // Base URL for your API
 const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
+let token = null;
+
+export const setToken = (newToken) => {
+  token = newToken;
+};
+
+export const getToken = () => {
+  return token;
+};
 const API = 'public/api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
 export {BASE_URL};
 // Function to send a POST request
 export const createUser = async (userData) => {
-    console.log('Sending data:', JSON.stringify(userData)); // Log the data being sent
+
 
     const data = {
             name:userData?.name,
@@ -23,7 +32,6 @@ export const createUser = async (userData) => {
             password:userData?.password,
             // confirmPassword:userData?.password
     };
-    console.log(data)
     return axios.post(`${BASE_URL+API}/signup`, data, {
         headers: {
             'Accept': 'application/json',
@@ -45,9 +53,9 @@ export const createUser = async (userData) => {
     });
     
 };
-export const updateUser = async (userData,token) => {
+export const updateUser = async (userData) => {
+    const token = getToken();
     const data = new FormData();
-console.log(userData);
 
     // Append form data
     userData.has('name') && data.append('name', userData?.name || '');
@@ -93,7 +101,8 @@ console.log(userData);
 };
 
 
-export const attachmentUpload = async (attachment, token) => {
+export const attachmentUpload = async (attachment) => {
+    const token = getToken();
     const data = new FormData();
 
     // Check if the attachment is available and append it
@@ -137,7 +146,7 @@ export const attachmentUpload = async (attachment, token) => {
 };
 
 export const loginUser = async (userData) => {
-    console.log('Sending data:', JSON.stringify(userData)); // Log the data being sent
+  
 
     const data = {
             email:userData?.email,
@@ -157,15 +166,15 @@ export const loginUser = async (userData) => {
     })
     .catch(error => {
         let err = {
-            status:error.response.status,
-            data:error.response.data
+            status:error?.response?.status,
+            data:error?.response?.data
         }
         return err; // Return error details as rejected promise
     });
     
 };
-export const userWallet = async (uid,token) => {
-console.log('ggggggg',uid, token);
+export const userWallet = async (uid) => {
+    const token = getToken();
 
     return axios.get(`${BASE_URL+API}/user-wallet/${uid}`,  {
         headers: {
@@ -188,8 +197,8 @@ console.log('ggggggg',uid, token);
     });
     
 };
-export const serviceList = async (token) => {
-
+export const serviceList = async () => {
+    const token = getToken();
     return axios.get(`${BASE_URL+API}/serviceList`,  {
         headers: {
             'Accept': 'application/json',
@@ -211,10 +220,10 @@ export const serviceList = async (token) => {
     });
     
 };
-export const orderList = async (uid,isCompleted, token) => {
-console.log('aaaaaaaaa', uid,isCompleted, token);
-
-    return axios.get(`${BASE_URL+API}/assignmentList/${uid}/${isCompleted}`,  {
+export const getProfile = async () => {
+    const token = getToken();
+    
+    return axios.get(`${BASE_URL+API}/userProfile`,  {
         headers: {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
@@ -235,8 +244,33 @@ console.log('aaaaaaaaa', uid,isCompleted, token);
     });
     
 };
-export const assignmentStatusList = async (token) => {
+export const orderList = async (isCompleted ) => {
+    const token = getToken();
+console.log(`${BASE_URL+API}/assignmentList/${isCompleted}`);
 
+    return axios.get(`${BASE_URL+API}/assignmentList/${isCompleted}`,  {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('Response received:', response?.data); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const assignmentStatusList = async () => {
+    const token = getToken();
     return axios.get(`${BASE_URL+API}/assignmentStatusList`,  {
         headers: {
             'Accept': 'application/json',
@@ -258,9 +292,8 @@ export const assignmentStatusList = async (token) => {
     });
     
 };
-export const policy = async (policy, token) => {
-console.log(policy, token)
-
+export const policy = async (policy) => {
+    const token = getToken();
     return axios.get(`${BASE_URL+API}/policy/${policy}`,  {
         headers: {
             'Accept': 'application/json',
@@ -283,8 +316,8 @@ console.log(policy, token)
     
 };
 
-export const submitOrder = async (assignmentData,token) => {
-    console.log(assignmentData);
+export const submitOrder = async (assignmentData) => {
+    const token = getToken();
     
     
     let data={};
@@ -331,8 +364,8 @@ export const submitOrder = async (assignmentData,token) => {
     
 };
 
-export const getOrdersCounts = async (token) => {
- 
+export const getOrdersCounts = async () => {
+    const token = getToken();
     
         return axios.get(`${BASE_URL+API}/assignmentCounts`,  {
             headers: {

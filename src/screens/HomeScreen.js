@@ -8,6 +8,7 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import BottomTab from "../components/BottomTab";
 import ButtonComponent from "../components/ButtonComponent";
 import { getOrdersCounts } from "../services/userServices"
+import { getData } from "../asyncStorage";
 const images = [
   'https://plus.unsplash.com/premium_photo-1683865776032-07bf70b0add1?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8MXx8dXJsfGVufDB8fDB8fHww',
   'https://plus.unsplash.com/premium_photo-1681506669115-cb6b2d30dbc7?q=80&w=1740&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D',
@@ -20,7 +21,8 @@ const Home = (props) => {
   const isFocused = useIsFocused();
   
   const user = useSelector((state) => state.userReducer.userInfo.user);
-  console.log(user?.token);
+ 
+  
   
   const [total, setTotal]=useState(0)
   const [inprogres, setInprogres]=useState(0)
@@ -28,6 +30,8 @@ const Home = (props) => {
   const [showPassword, setShowPassword] = useState(false);
 
   useEffect(()=>{
+
+    
     getOrdersCounts(user?.token)
     .then(res=>{
       if(res?.succes){

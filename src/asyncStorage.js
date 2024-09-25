@@ -13,9 +13,10 @@ export const setData = async (key,  value) => {
   export const getData = async (key) => {
     try {
       const value = await AsyncStorage.getItem(key);
-      
+      console.log("Raw value retrieved:", value); // Log the raw value
+  
       if (value !== null) {
-        return JSON.parse(value);
+        return value; // Parse if not null
       } else {
         console.log('No data found');
         return null;
@@ -25,3 +26,4 @@ export const setData = async (key,  value) => {
       return null;
     }
   };
+  
