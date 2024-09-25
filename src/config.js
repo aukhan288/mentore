@@ -4,3 +4,4 @@ export const color = [
     { name: 'Blue', code: '#0000FF' },
     // Add more colors as needed
 ];
+
