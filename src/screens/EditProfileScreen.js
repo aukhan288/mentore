@@ -9,12 +9,12 @@ import { COLORS } from "../config";
 import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { updateUser, BASE_URL } from "../services/userServices";
+import { updateUser, BASE_URL, IMAGE_PATH } from "../services/userServices";
 import { setData } from '../asyncStorage'
 
 const { height, width } = Dimensions.get('screen');
 const EditProfile = (props) => {
-  const user = useSelector((state) => state.userReducer.userInfo.user);
+  const user = useSelector((state) => state.userReducer.userInfo);
   const [updatedUserImage, setUpdatedUserImage] = useState(null)
   const [updatedUserName, setUpdatedUserName] = useState(null)
   const [updatedUserEmail, setUpdatedUserEmail] = useState(null)
@@ -28,7 +28,7 @@ console.log('***********',user);
   const [updatedCountryFlag, setUpdatedCountryFlag] = useState(null);
 
   useEffect(() => {
-    setUpdatedUserImage(BASE_URL+user?.image)
+    setUpdatedUserImage(BASE_URL+IMAGE_PATH+user?.image)
     setUpdatedUserName(user?.name)
     setUpdatedUserEmail(user?.email)
     setUpdatedCountryFlag(user?.country_flag)
@@ -170,7 +170,7 @@ console.log('***********',user);
                 <Text style={{
                   verticalAlign: 'middle'
                 }}>
-                  {updatedCountryFlag+updatedCountryCode}
+                  {updatedCountryCode}
                 </Text>
               </TouchableOpacity>
               <TextInput

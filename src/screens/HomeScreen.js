@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet,  } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView  } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
@@ -20,7 +20,7 @@ const Home = (props) => {
   const navigation = useNavigation();
   const isFocused = useIsFocused();
   
-  const user = useSelector((state) => state.userReducer.userInfo.user);
+  const user = useSelector((state) => state.userReducer.userInfo);
  
   
   

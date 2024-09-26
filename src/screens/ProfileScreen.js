@@ -4,11 +4,11 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import BottomTab from "../components/BottomTab";
-import { BASE_URL } from "../services/userServices";
+import { BASE_URL, IMAGE_PATH } from "../services/userServices";
 
 const { height, width } = Dimensions.get('screen');
 const Profile = (props) => {
-  const user = useSelector((state) => state.userReducer.userInfo.user);
+  const user = useSelector((state) => state.userReducer.userInfo);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
   return (
@@ -17,7 +17,7 @@ const Profile = (props) => {
       }
       <ImageBackground source={require('../assetes/images/bg-blue.jpg')}>
         <View style={{display:'flex',flexDirection:'column',alignItems:'center', height:height*0.4, paddingTop:height*0.02}}>
-            <Image source={{uri: BASE_URL+user?.image}} style={{borderWidth:2,borderColor:'#FF5F00',borderRadius:100, height:width*0.25,width:width*0.25}} />
+            <Image source={{uri: BASE_URL+IMAGE_PATH+user?.image}} style={{borderWidth:2,borderColor:'#FF5F00',borderRadius:100, height:width*0.25,width:width*0.25}} />
             <Text style={{color:'#FFF',fontWeight:'700',marginTop:5}}>{user?.name}</Text>
             <Text style={{color:'#FF5F00'}}>{user?.email}</Text>
         </View>
