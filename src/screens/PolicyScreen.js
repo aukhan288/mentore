@@ -14,9 +14,9 @@ const Policy = (props) => {
   const [ source, setSource ]=useState('');
   const [ policyTitle, setPolicyTitle ]=useState('');
   const isFocused = useIsFocused();
-  const user = useSelector((state) => state.userReducer.userInfo.user);
+  const user = useSelector((state) => state.userReducer.userInfo);
   useEffect(()=>{
-    policy('privacy',user?.token)
+    policy('privacy')
     .then(res=>{
       console.log(res);
       setPolicyTitle(res?.data?.title+" Pilicy")

@@ -4,6 +4,7 @@ import axios from 'axios';
 
 // Base URL for your API
 const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
+const IMAGE_PATH = 'storage/app/public/';
 let token = null;
 
 export const setToken = (newToken) => {
@@ -16,7 +17,7 @@ export const getToken = () => {
 const API = 'public/api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
-export {BASE_URL};
+export {BASE_URL, IMAGE_PATH};
 // Function to send a POST request
 export const createUser = async (userData) => {
 
@@ -294,6 +295,8 @@ export const assignmentStatusList = async () => {
 };
 export const policy = async (policy) => {
     const token = getToken();
+    console.log(token);
+    
     return axios.get(`${BASE_URL+API}/policy/${policy}`,  {
         headers: {
             'Accept': 'application/json',
@@ -388,4 +391,29 @@ export const getOrdersCounts = async () => {
         });
         
     };
+
+export const getAssignment = async (id) => {
+    const token = getToken();
+        
+    return axios.get(`${BASE_URL+API}/assignment/${id}`,  {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('***************Response received:*************', response?.data); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+        
+};
 

@@ -12,6 +12,7 @@ import WebViewScreen from '../screens/WebViewScreen';
 import StripeCard from '../screens/StripeCardScreen';
 import Login from '../screens/LoginScreen';
 import Register from '../screens/RegisterScreen';
+import AssignmentRevision from "../screens/AssignmentRevisionScreen"
 import ForgotPassword from '../screens/ForgotPasswordScreen';
 import GetStarted from '../screens/GetStartedScreen';
 import { getProfile } from '../services/userServices';
@@ -61,9 +62,14 @@ function MainStackNavigation() {
             options={{ headerShown: false }}
           />
           <Stack.Screen
-            name="AddOrder"
+            name="Add Order"
             component={AddOrder}
             options={{ headerTitle: "New Order" }}
+          />
+          <Stack.Screen
+            name="AssignmentRevision"
+            component={AssignmentRevision}
+            options={{ headerTitle: "Feedback" }}
           />
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen

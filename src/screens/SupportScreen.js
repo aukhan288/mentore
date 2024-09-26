@@ -1,8 +1,9 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, ImageBackground, Dimensions, StyleSheet, FlatList } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, ImageBackground, Dimensions, StyleSheet, FlatList, Linking } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { Link, useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
+import BottomTab from "../components/BottomTab";
   
 const { height, width } = Dimensions.get('screen');
 const Support = (props) => {
@@ -61,6 +62,25 @@ const Support = (props) => {
        style={styles.linkArrowImage} 
       />
     </TouchableOpacity>
+    <TouchableOpacity
+    onPress={()=>{ Linking.openURL('https://assignmentmentor.co.uk/') }}
+    style={styles.supportCard}>
+      <View style={styles.supportCardMainView}>
+        <Image 
+         style={styles.supportCardImage} 
+         source={require('../assetes/images/website.png')}
+        />
+        <View style={{marginLeft:width*0.03}}>
+        <Text style={styles.supportCardTitle}>Email</Text>
+        <Text style={styles.supportCardLink}>help@assignmentmentor.co.uk</Text>
+        </View>
+      </View>
+      <Image 
+       source={require('../assetes/images/arrow-forward.png')} 
+       style={styles.linkArrowImage} 
+      />
+    </TouchableOpacity>
+    <BottomTab screen={'Home'}/>
     </View>
   )
 }
@@ -69,6 +89,9 @@ const styles = StyleSheet.create({
   mainContainer: {
     height: height,
     width: width,
+    position:'relative',
+    display:'flex',
+    flex:1,
     flexDirection: "column",
     backgroundColor:'#FFFEFB'
   },

@@ -3,14 +3,15 @@ import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, FlatList, 
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useSelector } from 'react-redux';
 import { orderList } from "../services/userServices";
-import { useIsFocused } from '@react-navigation/native';
 import Icon from 'react-native-vector-icons/FontAwesome';
+import { useNavigation,useIsFocused } from '@react-navigation/native';
 
 const { height, width } = Dimensions.get('screen');
 
 
 
 const Orders = () => {
+  const navigation = useNavigation();
   const user = useSelector((state) => state.userReducer.userInfo.user);
   const [assignments, setAssignments] = useState([]);
   const [loader, setLoader] = useState(false);
@@ -109,7 +110,9 @@ const Orders = () => {
           <Text>{item.deadline || 'N/A'}</Text>
         </View>
         {(index==1) &&
-        <Pressable style={{backgroundColor:'#FF5F00',borderBottomRightRadius:8,overflow:'hidden', borderBottomLeftRadius:8,marginTop:15}}>
+        <Pressable
+        onPress={()=>{navigation.navigate('AssignmentRevision')}}
+        style={{backgroundColor:'#FF5F00',borderBottomRightRadius:8,overflow:'hidden', borderBottomLeftRadius:8,marginTop:15}}>
         <Text style={{color:'#FFF',textAlign:'center', paddingVertical:10}}>Apply for Rivision</Text>
       </Pressable>
         }

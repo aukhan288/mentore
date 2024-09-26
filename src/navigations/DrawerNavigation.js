@@ -15,7 +15,7 @@ import Referral from '../screens/ReferralScreen';
 import Policy from '../screens/PolicyScreen';
 import Support from '../screens/SupportScreen';
 import { useSelector, useDispatch } from 'react-redux';
-import { BASE_URL } from '../services/userServices';
+import { BASE_URL,IMAGE_PATH } from '../services/userServices';
 
 const { height, width } = Dimensions.get('screen');
 const Drawer = createDrawerNavigator();
@@ -34,7 +34,7 @@ const imageMap = {
 };
 
 const CustomDrawerItem = ({ label, onPress, isActive }) => {
-  const user = useSelector((state) => state.userReducer.userInfo.user);
+  const user = useSelector((state) => state.userReducer.userInfo);
   const image = imageMap[label] || require('../assetes/images/home.png'); // Fallback image
 
   return (
@@ -43,7 +43,7 @@ const CustomDrawerItem = ({ label, onPress, isActive }) => {
       style={[styles.drawerItemProfile, isActive && styles.drawerItemActive]}
       onPress={onPress}
     >
-      <Image source={{ uri:BASE_URL+user?.image }} style={{height:width*0.14, width:width*0.14, borderRadius:100}} />
+      <Image source={{ uri:BASE_URL+IMAGE_PATH+user?.image }} style={{height:width*0.14,marginRight:10, width:width*0.14, borderRadius:100}} />
       <View>
       <Text style={[styles.drawerItemActive,{color:'#FF5F00',fontWeight:'bold',fontSize:width*0.04}]}>
       {user?.name}
@@ -118,11 +118,6 @@ const DrawerNavigation = () => (
         name="My Orders"
         component={Orders}
         options={{ title: 'My Orders' }}
-      />
-      <Drawer.Screen
-        name="Settings"
-        component={Settings}
-        options={{ title: 'Settings' }}
       />
       <Drawer.Screen
         name="Referral"
