@@ -17,7 +17,13 @@ const Profile = (props) => {
       }
       <ImageBackground source={require('../assetes/images/bg-blue.jpg')}>
         <View style={{display:'flex',flexDirection:'column',alignItems:'center', height:height*0.4, paddingTop:height*0.02}}>
-            <Image source={{uri: BASE_URL+IMAGE_PATH+user?.image}} style={{borderWidth:2,borderColor:'#FF5F00',borderRadius:100, height:width*0.25,width:width*0.25}} />
+            <Image 
+             source={
+              user?.image
+                ? { uri: BASE_URL + IMAGE_PATH + user.image }
+                : require('../assetes/images/profile.png')
+            }
+            style={{borderWidth:2,borderColor:'#FF5F00',borderRadius:100, height:width*0.25,width:width*0.25}} />
             <Text style={{color:'#FFF',fontWeight:'700',marginTop:5}}>{user?.name}</Text>
             <Text style={{color:'#FF5F00'}}>{user?.email}</Text>
         </View>
