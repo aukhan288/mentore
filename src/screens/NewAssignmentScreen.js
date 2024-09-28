@@ -6,7 +6,7 @@ import InputFieledComponent from "../components/InputFieledComponent";
 import { serviceList } from '../services/userServices';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { attachmentUpload, submitOrder } from '../services/userServices';
+import { attachmentUpload, submitOrder, assignmentPrice } from '../services/userServices';
 import Spinner from 'react-native-loading-spinner-overlay';
 import DocumentPicker, {
   DirectoryPickerResponse,
@@ -38,6 +38,7 @@ const NewAssignment = () => {
   const [loader, setLoader] = useState(false);
   const [university, setUniversity]=useState('');
   const [numberOfPages, setNumberOfPages] = useState(1);
+  const [pricePerPage, setPricePerPage] = useState(0);
   const [attachments, setAttachments]=useState([]);
   const [specificInstruction, setSpecificInstruction]=useState('');
 
@@ -47,7 +48,14 @@ const NewAssignment = () => {
   useEffect(() => {
     getServices();
   }, []);
-
+  const getPrice=(item)=>{
+      assignmentPrice(item)
+      .then(res=>{
+         console.log('gggggggggggg',res?.data?.price);
+         setPricePerPage(res?.data?.price);
+         
+      })
+  }
   const getServices = () => {
     serviceList(user?.token).then(res => {
       console.log('Services fetched', JSON.stringify(res));
@@ -73,7 +81,7 @@ const NewAssignment = () => {
   );
   const EducationLevelItem = ({ item }) => (
     <View style={styles.listItem}>
-      <Pressable onPress={() => { setSelectedEducationLevel(item),console.log(item),
+      <Pressable onPress={() => { setSelectedEducationLevel(item),getPrice(item),
        setEducationLevelModal(false) }}>
         <Text>{item?.name}</Text>
       </Pressable>
@@ -113,7 +121,8 @@ const NewAssignment = () => {
       deadline:deadline,
       pages:numberOfPages,
       specificInstruction:specificInstruction,
-      files:attachments
+      files:attachments,
+      price:pricePerPage*numberOfPages
 
     },user?.token)
     .then(res=>{

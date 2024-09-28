@@ -81,7 +81,11 @@ const Orders = () => {
   });
   const Item = React.memo(({ item }) => (
     <View style={{ marginTop: height * 0.02 }}>
-      <Text style={{ marginHorizontal: width * 0.04 }}>Heading</Text>
+      <View style={{flexDirection:'row', justifyContent:'space-between'}}>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'700', color:'#031D53' }}>Price</Text>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'700', color:'#031D53' }}>{item?.price}</Text>
+
+      </View>
       <View style={styles.item}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between',marginHorizontal:16, paddingVertical:20 }}>
           <Text style={{ color: '#031D53', fontWeight: '400', fontSize: width * 0.04 }}>{item?.assignments_id}</Text>

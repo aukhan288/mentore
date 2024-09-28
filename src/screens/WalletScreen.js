@@ -6,35 +6,25 @@ import { useSelector, useDispatch } from 'react-redux';
 import { userWallet } from '../services/userServices'
 import { useIsFocused } from '@react-navigation/native';
 
-const DATA = [
-  {
-    id: 'bd7acbea-c1b1-46c2-aed5-3ad53abb28ba',
-    title: 'First Item',
-  },
-  {
-    id: '3ac68afc-c605-48d3-a4f8-fbd91aa97f63',
-    title: 'Second Item',
-  },
-  {
-    id: '58694a0f-3da1-471f-bd96-145571e29d72',
-    title: 'Third Item',
-  },
-];
-const Item = ({title}) => (
+
+const Item = (item) => (
   
-  <View style={{marginTop:height*0.02, marginHorizontal:width*0.04}}>
+  <View style={{marginTop:height*0.02, backgroundColor:'#FFF', borderWidth:1, padding:5, borderRadius:5, borderColor:'#e2e2e2', marginHorizontal:width*0.04}}>
+    {console.log(item)}
       
         <View style={{flexDirection:'row', justifyContent:'space-between'}}>
         <View style={{ flexDirection:'row', alignItems:'center' }}>
        
          {/* <Icon name='check-circle' size={width*0.06} color='#09C126'/> */}
-         <Image source={require('../assetes/images/user.png')} style={{height:width*0.14, width:width*0.14, marginRight:10}} />
          <View style={{flexDirection:'column'}}>
-          <Text style={{fontWeight:'700'}}>Jhon Eliven</Text>
-          <Text style={{fontSize:10, color:'#0007'}}>Jhon Eliven</Text>
+          <Text style={{fontWeight:'700'}}>{item?.transaction?.card_holder}</Text>
+          <Text style={{fontSize:10, color:'#0007'}}>{item?.transaction?.card_number}</Text>
          </View>
-        </View>  
-        <Text style={{color:'#B83232', fontWeight:'400', fontSize:width*0.04}}>$35.23</Text>
+        </View> 
+        <View style={{flexDirection:'row',justifyContent:'center', alignItems:'center'}}>
+        <Text style={{color:'#B83232', fontWeight:'400', fontSize:width*0.04}}>${item?.transaction?.amount}</Text>
+        <Image source={item?.transaction?.transaction_type === 'in' ? require('../assetes/images/down.png') : require('../assetes/images/up.png')} style={{height:20,width:20}} />
+        </View> 
     </View>
     </View>
   );
@@ -45,14 +35,14 @@ const Wallet = (props) => {
   const [showBalence, setShowBalence]=useState(false)
   const navigation = useNavigation();
   const [paymentOptionModal,setPaymentOptionModal] = useState(false)
-  const [balance,setBalance] = useState('0.00')
+  const [wallet,setWallet] = useState(null)
 
   useEffect(()=>{
     userWallet(userInfo?.user?.id,userInfo?.user?.token)
     .then(res=>{
-      console.log(res);
+      console.log(JSON.stringify(res));
       
-      setBalance(res?.wallet?.balance)
+      setWallet(res?.wallet)
     })
   },[isFocused])
   return (
@@ -64,7 +54,7 @@ const Wallet = (props) => {
      <View style={{justifyContent:'center', alignItems:'center',paddingTop:height*0.08, paddingBottom:20}}>
      <Text style={{color:'#FFF', fontWeight:'400', fontSize:width*0.05}}>Your Balence</Text>
      <View style={{flexDirection:'row', alignItems:'center'}}>
-     {showBalence?<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.1}}>{'£ '+ balance}</Text>
+     {showBalence?<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.1}}>{'£ '+ wallet?.balance}</Text>
      :<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.05}}>****</Text>}
       <TouchableOpacity 
       onPress={()=>setShowBalence(!showBalence)}
@@ -92,8 +82,8 @@ const Wallet = (props) => {
       </TouchableOpacity>
     </View>
     <FlatList
-        data={DATA}
-        renderItem={({item}) => <Item title={item.title} />}
+        data={wallet?.transactions}
+        renderItem={({item}) => <Item transaction={item} />}
         keyExtractor={item => item.id}
       />
 

@@ -43,7 +43,11 @@ const CustomDrawerItem = ({ label, onPress, isActive }) => {
       style={[styles.drawerItemProfile, isActive && styles.drawerItemActive]}
       onPress={onPress}
     >
-      <Image source={{ uri:BASE_URL+IMAGE_PATH+user?.image }} style={{height:width*0.14,marginRight:10, width:width*0.14, borderRadius:100}} />
+      <Image source={
+              user?.image
+                ? { uri: BASE_URL + IMAGE_PATH + user.image }
+                : require('../assetes/images/profile.png')
+            } style={{height:width*0.14,marginRight:10, width:width*0.14, borderRadius:100}} />
       <View>
       <Text style={[styles.drawerItemActive,{color:'#FF5F00',fontWeight:'bold',fontSize:width*0.04}]}>
       {user?.name}

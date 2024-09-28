@@ -5,6 +5,7 @@ import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { captureRef } from 'react-native-view-shot';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
+import { rechargeWallet } from '../services/userServices'
   
 const { height, width } = Dimensions.get('screen');
 
@@ -13,9 +14,11 @@ const StripeCard = (props) => {
   const user = useSelector((state) => state.userReducer.user);
 const [confirmationModal,setConfirmationModal] = useState(false);
 const [slipModal,setSlipModal] = useState(false);
-const [cvc, setCvc]=useState();
-const [cardExpiry, setCardExpiry]=useState();
-const [cardNumber, setCardNumber]=useState();
+const [cvc, setCvc]=useState(null);
+const [cardExpiry, setCardExpiry]=useState(null);
+const [cardNumber, setCardNumber]=useState(null);
+const [amount, setAmount]=useState(0);
+const [cardHolder, setCardHolder]=useState(null);
   const navigation = useNavigation();
 
   const saveToGallery= async ()=>{
@@ -45,14 +48,45 @@ const [cardNumber, setCardNumber]=useState();
     
     setSlipModal(true)
   }
+  const recharge=()=>{
+    
+    rechargeWallet({
+      amount:amount,
+      cardHolder:cardHolder,
+      cvc:cvc,
+      cardExpiry:cardExpiry,
+      cardNumber:cardNumber
+    })
+    .then(res=>{
+      saveToGallery()
+      console.log('%%%%%%%%%%%%%%%%%%%%%%',res)
+      
+    })
+  }
   return (
     <View style={styles.mainContainer}>
+       <View style={{marginHorizontal:width*0.04, borderWidth:1, marginTop:20, borderColor:'#e2e2e2',}}>
+       <TextInput
+        style={{paddingVertical:20, }}
+        onChangeText={(txt)=>{setAmount(txt)}}
+        placeholder="Enter Ammount"
+        value={amount}
+        />
+       </View>
+       <View style={{marginHorizontal:width*0.04, borderWidth:1, marginTop:20, borderColor:'#e2e2e2',}}>
+       <TextInput
+        style={{paddingVertical:20, }}
+        onChangeText={(txt)=>{setCardHolder(txt)}}
+        placeholder="Enter card holder name"
+        value={cardHolder}
+        />
+       </View>
     <View
         style={styles.supportCard}>
        <View style={{borderBottomWidth:1, borderColor:'#e2e2e2', width:'100%', flexDirection:'row', justifyContent:'space-between'}}>
         <TextInput
         style={{paddingVertical:20, }}
-        onChangeText={(txt)=>{setCardNumber}}
+        onChangeText={(txt)=>{setCardNumber(txt)}}
        placeholder="Card Number"
         />
         <View style={{flexDirection:'row',alignItems:'center'}}>
@@ -205,7 +239,7 @@ const [cardNumber, setCardNumber]=useState();
                 <Text>Cancle</Text>
             </TouchableOpacity>
             <TouchableOpacity 
-            onPress={()=>saveToGallery()}
+            onPress={()=>recharge()}
             style={{flex:1, paddingVertical:15, justifyContent:'center', alignItems:'center', backgroundColor:'#031D53'}}>
                 <Text style={{color:'#FFF'}}>Save to Gallery</Text>
             </TouchableOpacity>

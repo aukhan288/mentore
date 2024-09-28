@@ -131,7 +131,13 @@ console.log('***********',user);
       <View style={styles.mainContainer}>
         <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: height * 0.4, paddingTop: height * 0.02 }}>
           <View style={{ position: 'relative' }}>
-            <Image source={{ uri: updatedUserImage }} style={{ borderWidth: 2, borderColor: '#FF5F00', borderRadius: 100, height: width * 0.35, width: width * 0.35 }} />
+            {console.log(updatedUserImage)
+            }
+            <Image  source={
+              updatedUserImage
+                ? { uri: updatedUserImage }
+                : require('../assetes/images/profile.png')
+            } style={{ borderWidth: 2, borderColor: '#FF5F00', borderRadius: 100, height: width * 0.35, width: width * 0.35 }} />
 
             <TouchableOpacity
               onPress={() => openGallery()}

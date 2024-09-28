@@ -3,7 +3,8 @@
 import axios from 'axios';
 
 // Base URL for your API
-const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
+const BASE_URL = 'http://127.0.0.1:8000/';
+// const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
 const IMAGE_PATH = 'storage/app/public/';
 let token = null;
 
@@ -14,7 +15,7 @@ export const setToken = (newToken) => {
 export const getToken = () => {
   return token;
 };
-const API = 'public/api';
+const API = 'api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
 export {BASE_URL, IMAGE_PATH};
@@ -166,6 +167,8 @@ export const loginUser = async (userData) => {
         return response.data; // Return response data
     })
     .catch(error => {
+        console.log(error);
+        
         let err = {
             status:error?.response?.status,
             data:error?.response?.data
@@ -341,6 +344,7 @@ export const submitOrder = async (assignmentData) => {
     data.educationLevel=assignmentData?.educationLevel?.id
     data.deadline=assignmentData?.deadline
     data.pages=assignmentData?.pages
+    data.price=assignmentData?.price
     data.specificInstruction=assignmentData?.specificInstruction
     console.log('Sending data:', JSON.stringify(data)); // Log the data being sent
   
@@ -353,6 +357,49 @@ export const submitOrder = async (assignmentData) => {
     })
     .then(response => {
         // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const submitRivision = async (assignmentData) => {
+    const token = getToken();
+    console.log('&&&&&&&&',assignmentData);
+    
+    
+    let data={};
+    let attachments=[];
+    if(assignmentData?.referralCode!='' && assignmentData?.referralCode!=null){
+        data.referralCode=assignmentData?.referralCode;
+    }
+    if(assignmentData?.files?.length>0){
+          assignmentData?.files.map(item=>{
+            attachments.push(item?.path)
+          })
+        data.attachments=attachments;
+    }
+    data.deadline=assignmentData?.deadline
+    data.pages=assignmentData?.pages
+    data.specificInstruction=assignmentData?.specificInstruction
+    console.log('Sending data:', JSON.stringify(data)); // Log the data being sent
+  
+    return axios.post(`${BASE_URL+API}/submit-revision/${assignmentData?.assignmentId}`, data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('Response received:', response?.data); // Log the response data
         return response.data; // Return response data
     })
     .catch(error => {
@@ -394,6 +441,7 @@ export const getOrdersCounts = async () => {
 
 export const getAssignment = async (id) => {
     const token = getToken();
+        console.log(token);
         
     return axios.get(`${BASE_URL+API}/assignment/${id}`,  {
         headers: {
@@ -417,3 +465,66 @@ export const getAssignment = async (id) => {
         
 };
 
+export const rechargeWallet = async (props) => {
+    const token = getToken();
+    
+    
+    let data={
+        amount:props?.amount,
+        cardHolder:props?.cardHolder,
+        cvc:props?.cvc,
+        cardExpiry:props?.cardExpiry,
+        cardNumber:props?.cardNumber
+    };
+  
+
+    console.log('Sending data:', JSON.stringify(data)); // Log the data being sent
+  
+    return axios.post(`${BASE_URL+API}/recharge-wallet`, data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const assignmentPrice = async (level) => {
+    console.log('================$$$$$$$$$$$',level)
+    
+    const token = getToken();
+
+    return axios.get(`${BASE_URL+API}/assignment-price/${level?.id}`,  {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('Response received:', response?.data); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};

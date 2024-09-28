@@ -3,11 +3,13 @@ import { View, Text, TextInput, Image, TouchableOpacity, Modal, Pressable, Scrol
 import { useNavigation,useIsFocused } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import InputFieledComponent from "../components/InputFieledComponent";
-import { serviceList } from '../services/userServices';
+import { serviceList, submitRivision } from '../services/userServices';
 import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { attachmentUpload, submitOrder, getAssignment } from '../services/userServices';
 import Spinner from 'react-native-loading-spinner-overlay';
+import Collapsible from 'react-native-collapsible';
+
 import DocumentPicker, {
   DirectoryPickerResponse,
   DocumentPickerResponse,
@@ -26,17 +28,13 @@ const AssignmentRevision = () => {
   const [selectedService, setSelectedService] = useState(null);
   const [selectedEducationLevel, setSelectedEducationLevel] = useState(null);
   const [selectedReferencingStyle, setSelectedReferencingStyle] = useState(null);
-  const [services, setServices] = useState([]);
-  const [referencingStyle, setReferencingStyle] = useState([]);
-  const [educationLevel, setEducationLevel] = useState([]);
-  const [servicesModal, setServicesModal] = useState(false);
-  const [referencingStyleModal, setReferencingStyleModal] = useState(false);
-  const [educationLevelModal, setEducationLevelModal] = useState(false);
+
   // const [servicesModal, setServicesModal] = useState(false);
   const [show, setShow] = useState(false);
   const [deadline, setDeadline] = useState(new Date());
   const [open, setOpen] = useState(false);
   const [loader, setLoader] = useState(false);
+  const [showRevisions, setShowRevisions] = useState(false);
   const [university, setUniversity]=useState('');
   const [numberOfPages, setNumberOfPages] = useState(1);
   const [attachments, setAttachments]=useState([]);
@@ -86,19 +84,13 @@ const AssignmentRevision = () => {
 
   const submit=()=>{
     setLoader(true)
-    submitOrder({
-      referralCode:referralCode,
-      subject:subjectArea,
-      service:selectedService,
-      university:university,
-      referencingStyle:selectedReferencingStyle,
-      educationLevel:selectedEducationLevel,
+    submitRivision({
+      assignmentId:assignment?.id,
       deadline:deadline,
       pages:numberOfPages,
       specificInstruction:specificInstruction,
       files:attachments
-
-    },user?.token)
+    })
     .then(res=>{
       setLoader(false)
        if(res?.success){
@@ -144,10 +136,63 @@ const AssignmentRevision = () => {
         <View style={styles.itemDetailRow}>
           <Text> {assignment && assignment?.deadline} </Text>
         </View>
+        {assignment && assignment?.attachments?.length>0 &&
+        <View style={{flexDirection:'column',borderBottomWidth:1,borderBottomColor:'#e2e2e2',borderTopWidth:1,borderTopColor:'#e2e2e2',marginHorizontal:16,marginTop:16}}>
+        <Text style={{fontWeight:'700', color:'#031D53'}}> Attachments </Text>
+     
       </View>
-      
+        }
+          
+        {assignment && assignment?.attachments?.length>0 && assignment?.attachments?.map((att,index)=>{          
+          return(
+            <View
+            key={index}
+            style={{flexDirection:'row',justifyContent:'space-between',marginHorizontal:width*0.05,paddingTop:5, alignItems:'center'}}>
+              <Text>{att?.path}</Text>
+            </View> 
+          )
+        })} 
+      </View>   
     </View>
+    <View style={styles.historyCard}>
+    <Pressable
+    onPress={()=>{setShowRevisions(!showRevisions)}}
+    >
+          <View style={{backgroundColor:'#FF5F00',padding:10, display:'flex',flexDirection:'row', justifyContent:'space-between'}}>
+            <Text style={{color:'#FFF', fontWeight:'700'}}>Revision History</Text>
+            {showRevisions?<Icon name="caret-down" color={'#FFF'} size={20} /> :<Icon name="caret-up" color={'#FFF'} size={20} />}
+          </View>
+        </Pressable>
+        <Collapsible style={{paddingBottom:10}} collapsed={showRevisions} align="center">
+          <View style={{padding:10}}>
+          {assignment && assignment.revisions?.length > 0 && assignment.revisions.map((revision, index) => {
+    console.log(revision);
+    
+    return (
+        <View key={revision.id} style={{borderWidth: 1, borderColor: '#e2e2e2', borderRadius: 5, padding: 5, marginBottom: 10}}>
+            <Text style={{color:'#031D53', fontWeight:'700'}}>Revision # {index + 1}</Text>
+            <Text>Deadline: {revision?.deadline}</Text>
+            <Text>Instructions: {revision?.specific_instruction}</Text>
+            <Text>Estimated Pages: {revision?.pages * 250}</Text>
+            <Text style={{color:'#031D53', fontWeight:'700', marginTop:10}}>Attachments:</Text>
+            {revision?.attachments?.length > 0 ? (
+                revision.attachments.map(attachment => {
+                    console.log(attachment);
+                    
+                    return (
+                        <Text key={attachment.id}>{attachment?.path}</Text>
+                    );
+                })
+            ) : (
+                <Text>No attachments available</Text>
+            )}
+        </View>
+    );
+})}
 
+          </View>
+        </Collapsible>
+    </View>
     
 
 
@@ -155,7 +200,7 @@ const AssignmentRevision = () => {
 
         
 
-
+   
 
         <TouchableOpacity
           style={styles.datePicker}
@@ -220,22 +265,13 @@ const AssignmentRevision = () => {
         <Text style={{paddingLeft:10}}>Drop file(s) here.</Text>
         <Text style={{backgroundColor:'#031D53', paddingVertical:15, paddingHorizontal:10,color:'#FFF'}}>Browse..</Text>
       </Pressable>
-
-       {assignment && assignment?.attachments?.length>0 && assignment?.attachments?.map((att,index)=>{          
+    
+        {attachments?.length>0 && attachments?.map((att,index)=>{          
           return(
             <View
             key={index}
-            style={{flexDirection:'row',justifyContent:'space-between',marginHorizontal:width*0.05,paddingVertical:10, alignItems:'center'}}>
+            style={{flexDirection:'row',justifyContent:'space-between',marginHorizontal:width*0.05,paddingTop:5, alignItems:'center'}}>
               <Text>{att?.path}</Text>
-            </View>
-          )
-        })} 
-       {/* {assignment && assignment?.attachments.length>0 && attachments?.map((att,index)=>{          
-          return(
-            <View
-            key={index}
-            style={{flexDirection:'row',justifyContent:'space-between',marginHorizontal:width*0.05,alignItems:'center'}}>
-              <Text>{att?.name}</Text>
               <Pressable
               onPress={()=>setAttachments((prevAttachments) => 
                 prevAttachments.filter((_, i) => i !== index)
@@ -243,65 +279,21 @@ const AssignmentRevision = () => {
               style={{paddingLeft:20,paddingVertical:10}}>
               <Text style={{color:'#FF5F00',fontWeight:'700'}}>Remove</Text>
               </Pressable>
-            </View>
+            </View> 
           )
-        })}  */}
+        })} 
+      
+        <View style={{borderBottomWidth:1,marginHorizontal:width*0.05,marginVertical:height*0.02, borderBottomColor:'#e2e2e2'}}></View>
         <Pressable
         onPress={()=>submit()}
         style={{backgroundColor:'#FF5F00',justifyContent:'center', marginHorizontal:width*0.05,alignItems:'center',paddingVertical:15,borderRadius:7, marginTop:20}}
         >
           <Text style={{color:'#FFF',fontWeight:'700'}}>Proceed</Text>
+        
         </Pressable>
-      </View>
+     
 
-      <Modal
-        transparent={true}
-        visible={servicesModal}
-      >
-        <Pressable
-        onPress={()=>setServicesModal(false)}
-        style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <FlatList
-              data={services}
-              renderItem={({ item }) => <ServiceItem item={item} />}
-              keyExtractor={item => item.id}
-            />
-          </View>
-        </Pressable>
-      </Modal>
-      <Modal
-        transparent={true}
-        visible={referencingStyleModal}
-      >
-        <Pressable
-        onPress={()=>setReferencingStyleModal(false)}
-        style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <FlatList
-              data={referencingStyle}
-              renderItem={({ item }) => <ReferencingStylItem item={item} />}
-              keyExtractor={item => item.id}
-            />
-          </View>
-        </Pressable>
-      </Modal>
-      <Modal
-        transparent={true}
-        visible={educationLevelModal}
-      >
-        <Pressable
-        onPress={()=>setEducationLevelModal(false)}
-        style={styles.modalBackdrop}>
-          <View style={styles.modalContainer}>
-            <FlatList
-              data={educationLevel}
-              renderItem={({ item }) => <EducationLevelItem item={item} />}
-              keyExtractor={item => item.id}
-            />
-          </View>
-        </Pressable>
-      </Modal>
+      </View>
     </ScrollView>
   );
 }
@@ -446,6 +438,18 @@ const styles = StyleSheet.create({
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.25,
     shadowRadius: 3.84,
+    elevation: 3,
+  },
+  historyCard: {
+    backgroundColor: '#FFF',
+    marginVertical: 8,
+    marginHorizontal: 16,
+    borderRadius: 8,
+    shadowColor: "#000",
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.25,
+    shadowRadius: 3.84,
+    overflow:'hidden',
     elevation: 3,
   },
   itemDetailRow: {
