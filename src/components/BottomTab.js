@@ -26,7 +26,7 @@ const  BottomTab=(props)=> {
           } 
         </TouchableOpacity>
         <TouchableOpacity
-        onPress={()=>Linking.openURL(`tel:${'03124676603'}`)}
+        onPress={()=>navigation.navigate('Support')}
 
         style={styles.bottomTabBtn}
         >
@@ -57,12 +57,12 @@ const  BottomTab=(props)=> {
  
         }}
         >
-          <Image source={require('../assetes/images/plus.png')} style={{height:width*0.08,width:width*0.08}} />
+          <Image source={require('../assetes/images/add.png')} style={{height:width*0.08,width:width*0.08}} />
           {/* <Icon name="plus" color={'#FFF'} size={30} /> */}
         </TouchableOpacity>
         </View>
         <TouchableOpacity
-        onPress={()=>Linking.openURL('whatsapp://send?text=hello&phone=03124676603')}
+        onPress={()=>Linking.openURL('whatsapp://send?text=hello&phone=+44 738 678 3749')}
         style={styles.bottomTabBtn}
         >
      <Image source={require('../assetes/images/whatsapp.png')} 
@@ -80,7 +80,7 @@ const  BottomTab=(props)=> {
           style={{width:width*0.06, height:width*0.06,}}
         />
           :
-          <Image source={require('../assetes/images/profile.png')} 
+          <Image source={require('../assetes/images/profile-white.png')} 
             style={{width:width*0.06, height:width*0.06,}}
           />
           }

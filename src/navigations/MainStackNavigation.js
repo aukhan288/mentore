@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator } from 'react-native';
+import { View, ActivityIndicator, Image, Dimensions, Alert, Modal, Platform, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getData } from '../asyncStorage';
@@ -12,21 +12,35 @@ import WebViewScreen from '../screens/WebViewScreen';
 import StripeCard from '../screens/StripeCardScreen';
 import Login from '../screens/LoginScreen';
 import Register from '../screens/RegisterScreen';
+import Support from '../screens/SupportScreen';
 import AssignmentRevision from "../screens/AssignmentRevisionScreen"
+import AssignmentDetail from "../screens/AssignmentDetailScreen"
 import ForgotPassword from '../screens/ForgotPasswordScreen';
 import GetStarted from '../screens/GetStartedScreen';
-import { getProfile } from '../services/userServices';
+import { getProfile, setUdid } from '../services/userServices';
 import { setToken } from '../services/userServices'; // Import the token management functions
+import messaging from '@react-native-firebase/messaging';
+import PushNotification from 'react-native-push-notification';
+
 
 const Stack = createNativeStackNavigator();
-
+const {hieght, width}=Dimensions.get('screen')
 function MainStackNavigation() {
   const user = useSelector((state) => state.userReducer.userInfo);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
+ 
 
   useEffect(() => {
+    
     const fetchData = async () => {
+      await messaging().registerDeviceForRemoteMessages();
+      const udid = await messaging().getToken();
+      console.log('uuuuuuu',udid);
+      
+      setUdid(udid)
+
+      
       try {
         const token = await getData('@token');
         if (token) {
@@ -47,6 +61,7 @@ function MainStackNavigation() {
   if (isLoading) {
     return (
       <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F4FAEB' }}>
+        <Image source={require('../assetes/images/logo.png')} style={{width:width*0.4, height:width*0.14}}/>
         <ActivityIndicator size="large" color="#1B2A56" />
       </View>
     );
@@ -71,6 +86,11 @@ function MainStackNavigation() {
             component={AssignmentRevision}
             options={{ headerTitle: "Feedback" }}
           />
+          <Stack.Screen
+            name="AssignmentDetail"
+            component={AssignmentDetail}
+            options={{ headerTitle: "Assignment Detail" }}
+          />
           <Stack.Screen name="EditProfile" component={EditProfile} />
           <Stack.Screen
             name="ChangePassword"
@@ -85,6 +105,16 @@ function MainStackNavigation() {
           <Stack.Screen
             name="WebViewScreen"
             component={WebViewScreen}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#031D53' },
+              headerTintColor: '#FFF',
+              headerTitle: 'Web View',
+            }}
+          />
+          <Stack.Screen
+            name="Support"
+            component={Support}
             options={{
               headerShown: true,
               headerStyle: { backgroundColor: '#031D53' },

@@ -9,7 +9,7 @@ import { COLORS } from "../config";
 import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { updateUser, BASE_URL, IMAGE_PATH } from "../services/userServices";
+import { updateUser, BASE_URL, IMAGE_PATH, getToken } from "../services/userServices";
 import { setData } from '../asyncStorage'
 
 const { height, width } = Dimensions.get('screen');
@@ -44,6 +44,7 @@ console.log('***********',user);
     })
   }
   const saveChanges = async () => {
+    const token = getToken();
     //  updateUser({
     //     id:user?.id,
     //     name:updatedUserName,
@@ -79,7 +80,7 @@ console.log('***********',user);
                      headers: {
                          'Accept':'application/json',
                          'Content-Type': 'multipart/form-data',
-                         'Authorization': `Bearer ${user?.token}`,
+                         'Authorization': `Bearer ${token}`,
                      },
                  }
              );

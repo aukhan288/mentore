@@ -4,7 +4,7 @@ import { setData } from "../asyncStorage";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
-import { loginUser } from '../services/userServices';
+import { loginUser, setToken } from '../services/userServices';
 import ErrorComponent from "../components/ErrorComponent";
 import Spinner from 'react-native-loading-spinner-overlay';
 import { useSelector, useDispatch } from 'react-redux';
@@ -45,7 +45,7 @@ const Login = () => {
     if (result.code === 200) {
       // Dispatch user info to Redux
       dispatch(setUser(result.data.user));
-      // Save token in AsyncStorage
+      setToken(result.data.user.token);
       await setData('@token', result.data.user.token);
       navigation.navigate('DrawerStack');
     } else {

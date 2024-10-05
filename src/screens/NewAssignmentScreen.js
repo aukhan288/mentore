@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Modal, Pressable, ScrollView, FlatList, Dimensions, StyleSheet } from "react-native";
+import { View, Text, TextInput, Image, TouchableOpacity, Modal, Pressable, ScrollView, FlatList, Dimensions, StyleSheet, Alert } from "react-native";
 import { useNavigation } from '@react-navigation/native';
 import { useSelector } from 'react-redux';
 import InputFieledComponent from "../components/InputFieledComponent";
@@ -15,6 +15,7 @@ import DocumentPicker, {
   isInProgress,
   types,
 } from 'react-native-document-picker'
+import ErrorComponent from "../components/ErrorComponent";
 
 const { height, width } = Dimensions.get('screen');
 
@@ -41,6 +42,11 @@ const NewAssignment = () => {
   const [pricePerPage, setPricePerPage] = useState(0);
   const [attachments, setAttachments]=useState([]);
   const [specificInstruction, setSpecificInstruction]=useState('');
+  const [educationLevelError, setEducationLevelError]=useState(null);
+  const [referencingStyleError, setReferencingStyleError]=useState(null);
+  const [serviceError, setServiceError]=useState(null);
+  const [universityError, setUniversityError]=useState(null);
+  const [subjectError, setSubjectError]=useState(null);
 
 
   const navigation = useNavigation();
@@ -67,14 +73,14 @@ const NewAssignment = () => {
 
   const ServiceItem = ({ item }) => (
     <View style={styles.listItem}>
-      <Pressable onPress={() => { setSelectedService(item), setServicesModal(false) }}>
+      <Pressable onPress={() => { setSelectedService(item), setServicesModal(false),setServiceError(null) }}>
         <Text>{item?.name}</Text>
       </Pressable>
     </View>
   );
   const ReferencingStylItem = ({ item }) => (
     <View style={styles.listItem}>
-      <Pressable onPress={() => { setSelectedReferencingStyle(item), setReferencingStyleModal(false) }}>
+      <Pressable onPress={() => { setSelectedReferencingStyle(item), setReferencingStyleModal(false), setReferencingStyleError(null) }}>
         <Text>{item?.name}</Text>
       </Pressable>
     </View>
@@ -82,7 +88,7 @@ const NewAssignment = () => {
   const EducationLevelItem = ({ item }) => (
     <View style={styles.listItem}>
       <Pressable onPress={() => { setSelectedEducationLevel(item),getPrice(item),
-       setEducationLevelModal(false) }}>
+       setEducationLevelModal(false), setEducationLevelError(null) }}>
         <Text>{item?.name}</Text>
       </Pressable>
     </View>
@@ -139,6 +145,34 @@ const NewAssignment = () => {
         setSpecificInstruction(null),
         setAttachments([])
        }
+       if(res?.success){
+        Alert.alert(res?.message)
+       }
+       if(res?.data?.errors.hasOwnProperty('subject')){
+        console.log('aaaaaaa');
+        setSubjectError(res?.data?.errors?.subject[0])
+        
+       }
+       if(res?.data?.errors.hasOwnProperty('university')){
+        console.log('aaaaaaa');
+        setUniversityError(res?.data?.errors?.university[0])
+        
+       }
+       if(res?.data?.errors.hasOwnProperty('service')){
+        console.log('aaaaaaa');
+        setServiceError(res?.data?.errors?.service[0])
+        
+       }
+       if(res?.data?.errors.hasOwnProperty('educationLevel')){
+        console.log('aaaaaaa');
+        setEducationLevelError(res?.data?.errors?.educationLevel[0])
+        
+       }
+       if(res?.data?.errors.hasOwnProperty('referencingStyle')){
+        console.log('aaaaaaa');
+        setReferencingStyleError(res?.data?.errors?.referencingStyle[0])
+        
+       }
     })
   }
   return (
@@ -151,17 +185,21 @@ const NewAssignment = () => {
         />}
         <Text style={styles.headerText}>Fill Your Order Details</Text>
 
-        <View style={styles.inputContainer}>
+        <View style={[styles.inputContainer,{marginBottom:20}]}>
           <InputFieledComponent label='Enter Referral Code (Optional)' text={referralCode} setText={setReferralCode} />
         </View>
 
-        <View style={styles.inputContainer}>
-          <InputFieledComponent label='Subject Area' text={ subjectArea} setText={setSubjectArea} />
+        <View style={[styles.inputContainer,{marginBottom:subjectError?0:20}]}>
+          <InputFieledComponent label='Subject Area' text={ subjectArea} err={subjectError?true:false} setErr={setSubjectError}  setText={setSubjectArea} />
         </View>
-
+        <View style={{paddingHorizontal:width*0.04, marginBottom:10}}>
+        <ErrorComponent
+        error={subjectError}
+        />
+        </View>
         <Pressable
           onPress={() => setServicesModal(true)}
-          style={styles.dropdown}
+          style={[styles.dropdown,{borderColor: serviceError?'red':'#e2e2e2'}]}
         >
           <Text style={styles.dropdownLabel}>Select Service</Text> 
           <Text style={{ color:selectedService?'#000':'#0005' }}>{selectedService?.name?selectedService?.name:'Select Service'}</Text>
@@ -170,26 +208,41 @@ const NewAssignment = () => {
             style={styles.dropdownIcon}
           />
         </Pressable>
-
-        <View style={[styles.inputContainer,{marginTop:20}]}>
-          <InputFieledComponent label='Name of University' text={university} setText={setUniversity} />
+        <View style={{paddingHorizontal:width*0.04}}>
+        <ErrorComponent
+        error={serviceError}
+        />
         </View>
+        <View style={[styles.inputContainer,{marginTop:20,marginBottom:universityError?0:20}]}>
+          <InputFieledComponent label='Name of University' text={university} err={universityError?true:false} setErr={setUniversityError} setText={setUniversity} />
+        </View>
+          <View style={{paddingHorizontal:width*0.04, marginBottom:10}}>
+        <ErrorComponent
+        error={universityError}
+        />
+        </View>
+       
 
         <Pressable
           onPress={() => setReferencingStyleModal(true)}
-          style={styles.dropdown}
+          style={[styles.dropdown,,{borderColor: referencingStyleError?'red':'#e2e2e2'}]}
         >
           <Text style={styles.dropdownLabel}>Referencing Style</Text>
-          <Text style={{ color:selectedEducationLevel?'#000':'#0005' }}>{selectedReferencingStyle?.name?selectedReferencingStyle?.name:'Select Referencing Style'}</Text>
+          <Text style={{ color:selectedReferencingStyle?'#000':'#0005' }}>{selectedReferencingStyle?.name?selectedReferencingStyle?.name:'Select Referencing Style'}</Text>
           <Image
             source={require('../assetes/images/arrow-down.png')}
             style={styles.dropdownIcon}
           />
         </Pressable>
+        <View style={{paddingHorizontal:width*0.04}}>
+        <ErrorComponent
+        error={referencingStyleError}
+        />
+        </View>
 
         <Pressable
           onPress={() => setEducationLevelModal(true)}
-          style={[styles.dropdown, styles.dropdownMarginTop]}
+          style={[styles.dropdown, styles.dropdownMarginTop,{borderColor: educationLevelError?'red':'#e2e2e2'}]}
         >
           <Text style={styles.dropdownLabel}>Education Level</Text>
           <Text style={{ color:selectedEducationLevel?'#000':'#0005' }}>{selectedEducationLevel?.name?selectedEducationLevel?.name:'Select Education Level'}</Text>
@@ -198,6 +251,11 @@ const NewAssignment = () => {
             style={styles.dropdownIcon}
           />
         </Pressable>
+        <View style={{paddingHorizontal:width*0.04}}>
+        <ErrorComponent
+        error={educationLevelError}
+        />
+        </View>
 
         <TouchableOpacity
           style={styles.datePicker}
@@ -353,14 +411,13 @@ const styles = StyleSheet.create({
     marginBottom: height * 0.03,
   },
   inputContainer: {
-    marginBottom: 20,
+    // marginBottom: 20,
     height: 60,
   },
   dropdown: {
     borderWidth: 1,
     marginHorizontal: width * 0.04,
     borderRadius: 7,
-    borderColor: '#e2e2e2',
     paddingVertical: 20,
     paddingHorizontal: width * 0.03,
     position: 'relative',

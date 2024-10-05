@@ -13,6 +13,7 @@ const Support = (props) => {
   return (
     <View style={styles.mainContainer}>
          <TouchableOpacity
+         onPress={()=>Linking.openURL(`tel:${'+44 738 678 3749'}`)}
     style={styles.supportCard}>
       <View style={styles.supportCardMainView}>
         <Image style={styles.supportCardImage} 
@@ -20,7 +21,7 @@ const Support = (props) => {
         />
         <View style={{marginLeft:width*0.03}}>
         <Text style={styles.supportCardTitle}>Call Now</Text>
-        <Text style={styles.supportCardLink}>+44 7386 783749</Text>
+        <Text style={styles.supportCardLink}>+44 738 678 3749</Text>
         </View>
       </View>
       <Image 
@@ -29,6 +30,7 @@ const Support = (props) => {
       />
     </TouchableOpacity>
          <TouchableOpacity
+         onPress={()=>Linking.openURL('whatsapp://send?text=hello&phone=+44 738 678 3749')}
     style={styles.supportCard}>
       <View style={styles.supportCardMainView}>
         <Image 
@@ -37,7 +39,7 @@ const Support = (props) => {
         />
         <View style={{marginLeft:width*0.03}}>
         <Text style={styles.supportCardTitle}>WhatsApp</Text>
-        <Text style={styles.supportCardLink}>+44 7386 783749</Text>
+        <Text style={styles.supportCardLink}>+44 738 678 3749</Text>
         </View>
       </View>
       <Image 
@@ -46,6 +48,7 @@ const Support = (props) => {
       />
     </TouchableOpacity>
     <TouchableOpacity
+    onPress={()=>Linking.openURL('mailto:help@assignmentmentor.co.uk')}
     style={styles.supportCard}>
       <View style={styles.supportCardMainView}>
         <Image 
@@ -63,6 +66,24 @@ const Support = (props) => {
       />
     </TouchableOpacity>
     <TouchableOpacity
+    onPress={()=>Linking.openURL('mailto:help@assignmentmentor.co.uk')}
+    style={styles.supportCard}>
+      <View style={styles.supportCardMainView}>
+        <Image 
+         style={styles.supportCardImage} 
+         source={require('../assetes/images/help-call.png')}
+        />
+        <View style={{marginLeft:width*0.03}}>
+        <Text style={styles.supportCardTitle}>Request Call Back Help</Text>
+        <Text style={styles.supportCardLink}>Help</Text>
+        </View>
+      </View>
+      <Image 
+       source={require('../assetes/images/arrow-forward.png')} 
+       style={styles.linkArrowImage} 
+      />
+    </TouchableOpacity>
+    <TouchableOpacity
     onPress={()=>{ Linking.openURL('https://assignmentmentor.co.uk/') }}
     style={styles.supportCard}>
       <View style={styles.supportCardMainView}>
@@ -71,8 +92,8 @@ const Support = (props) => {
          source={require('../assetes/images/website.png')}
         />
         <View style={{marginLeft:width*0.03}}>
-        <Text style={styles.supportCardTitle}>Email</Text>
-        <Text style={styles.supportCardLink}>help@assignmentmentor.co.uk</Text>
+        <Text style={styles.supportCardTitle}>Website</Text>
+        <Text style={styles.supportCardLink}>assignmentmentor.co.uk</Text>
         </View>
       </View>
       <Image 

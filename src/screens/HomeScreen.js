@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView  } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, ImageBackground, Pressable  } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation, useIsFocused } from '@react-navigation/native';
 import Carousel from 'react-native-reanimated-carousel';
@@ -43,7 +43,12 @@ const Home = (props) => {
   },[isFocused])
   return (
     <View style={styles.mainContainer}>
-      <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
+   <ScrollView>
+    <View style={{flex:1,display: "flex",
+    flexDirection: "column",
+    position:'relative',
+    backgroundColor:'#031D53', minHeight:height, width:width}}>
+   <Text style={{color:'#FFF',marginLeft:width*.03,marginTop:height*0.01, fontSize:width*0.06 }}>Hey, {user?.name} !</Text>
       <View style={{ flex: 1 }}>
       <Carousel
             loop
@@ -65,7 +70,7 @@ const Home = (props) => {
             )}
         />
         </View>
-      <View style={{ width:width, paddingHorizontal:width*0.02, backgroundColor:'#FFF', height:height*0.6, bottom:0,position:'absolute', borderTopLeftRadius:25, borderTopRightRadius:25 }}>
+      <View style={{ width:width, paddingHorizontal:width*0.02, backgroundColor:'#FFF',  bottom:0,position:'absolute',paddingBottom:80, borderTopLeftRadius:25, borderTopRightRadius:25 }}>
         <Text style={{marginTop:height*0.02, marginHorizontal:width*0.02, color:'#1C1B1F'}}>Orders</Text>
         <View style={{padding:10, flexDirection:'row',justifyContent:'space-between'}}>
           <TouchableOpacity
@@ -91,33 +96,55 @@ const Home = (props) => {
         </View> 
         
       <ButtonComponent {...props} />
-  <View style={{flexDirection:'column'}}>
-  <TouchableOpacity
-      onPress={()=>navigation.navigate('WebViewScreen')}
-      style={{width:width,justifyContent:'center',alignItems:'center', marginVertical:height*0.04}}>
-        <Image source={require('../assetes/images/toolBanner.png')} style={{resizeMode:'contain'}}/>
-      </TouchableOpacity>
-      <TouchableOpacity
-      onPress={()=>navigation.navigate('WebViewScreen')}
-      style={{width:width,justifyContent:'center',alignItems:'center', marginVertical:height*0.04}}>
-        <Image source={require('../assetes/images/toolBanner.png')} style={{resizeMode:'contain'}}/>
-      </TouchableOpacity>
-  </View>
+      <View
+      style={{position:'relative', paddingHorizontal:width*0.04, marginTop:height*0.02}}>
+        <Text style={{fontWeight:'700',fontSize:width*0.045}}>Get Accurate Results Instantly</Text>
+        <Text style={{fontWeight:'700',fontSize:width*0.045}}>with Our <Text style={{fontWeight:'700',fontSize:width*0.045,color:'#FF5F00'}}>Plagiarism Checker!</Text></Text>
+        <View style={{backgroundColor:'#031D53', borderRadius:8, padding:10 }}>
+          <Text style={{color:'#FFF', width:width*0.5, }}>Ensure your work is original and free from plagiarism with just one click.</Text>
+        <Pressable 
+        onPress={()=>navigation.navigate('WebViewScreen')}
+        style={{backgroundColor:'#FF5F00', marginTop:20, width:width*0.3, borderRadius:5, justifyContent:'center', alignItems:'center',padding:5, marginTop:10}}>
+          <Text style={{color:'#FFF'}}>Check Now!</Text>
+        </Pressable>
+        </View>
+        <Image
+          source={require('../assetes/images/doctor.png')} style={{position:'absolute', bottom:0, right:10,height:width*0.4, width:width*0.75}}
+          />
+
       </View>
+  <View
+      style={{position:'relative', paddingHorizontal:width*0.04, marginTop:height*0.02}}>
+        <Text style={{fontWeight:'700',fontSize:width*0.045}}>Get Accurate Results Instantly</Text>
+        <Text style={{fontWeight:'700',fontSize:width*0.045}}>with Our <Text style={{fontWeight:'700',fontSize:width*0.045,color:'#FF5F00'}}>Plagiarism Checker!</Text></Text>
+        <View style={{backgroundColor:'#031D53', borderRadius:8, padding:10 }}>
+          <Text style={{color:'#FFF', width:width*0.5, }}>Ensure your work is original and free from plagiarism with just one click.</Text>
+        <Pressable 
+        onPress={()=>navigation.navigate('WebViewScreen')}
+        style={{backgroundColor:'#FF5F00', marginTop:20, width:width*0.3, borderRadius:5, justifyContent:'center', alignItems:'center',padding:5, marginTop:10}}>
+          <Text style={{color:'#FFF'}}>Check Now!</Text>
+        </Pressable>
+        </View>
+        <Image
+          source={require('../assetes/images/doctor.png')} style={{position:'absolute', bottom:0, right:10,height:width*0.4, width:width*0.75}}
+          />
+
+      </View>
+      </View>
+      
+      </View>
+ 
+   </ScrollView>
     <BottomTab screen={'Home'}/>
     </View>
   )
 }
 
 const styles = StyleSheet.create({
-  mainContainer: {
-    height: height,
-    width: width,
-    display: "flex",
-    flex:1,
-    flexDirection: "column",
-    position:'relative',
-    backgroundColor:'#031D53'
+  mainContainer:{
+    height:height, width:width,
+    flexDirection:'column',
+    flex:1
   },
   orderBox:{
     shadowColor: "#000",
