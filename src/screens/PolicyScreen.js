@@ -18,10 +18,8 @@ const Policy = (props) => {
   useEffect(()=>{
     policy('privacy')
     .then(res=>{
-      console.log(res);
-      setPolicyTitle(res?.data?.title+" Pilicy")
-      setSource(res?.data?.policy)
-      
+      setPolicyTitle(res?.title)
+      setSource(res.policy.policy)
     })
 
   },[isFocused])
@@ -32,12 +30,12 @@ const Policy = (props) => {
     >
     <View style={styles.mainContainer}>
       <Text style={{color:'#1B2A56', fontWeight:'700', fontSize:width*0.08, textTransform:'capitalize', marginVertical:height*0.01}}>{policyTitle}</Text>
-    <RenderHtml
+    {source &&<RenderHtml
       contentWidth={width}
       source={{
         html: source,
     }}
-    />
+    />}
     </View>
     </ScrollView>
   )
@@ -53,7 +51,9 @@ const styles = StyleSheet.create({
     paddingTop:width*.04,
     paddingBottom:width*.08,
     position:'relative',
-    backgroundColor:'#FFFEFB'
+    backgroundColor:'#FFFEFB',
+    minHeight:height,
+    width:width
   }
 })
 export default Policy;

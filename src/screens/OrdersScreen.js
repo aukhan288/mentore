@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, FlatList, ActivityIndicator, Pressable } from "react-native";
+import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet,PermissionsAndroid , FlatList, ActivityIndicator, Pressable } from "react-native";
 import { TabView, SceneMap, TabBar } from 'react-native-tab-view';
 import { useSelector } from 'react-redux';
-import { orderList } from "../services/userServices";
+import { BASE_URL,IMAGE_PATH, orderList } from "../services/userServices";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation,useIsFocused } from '@react-navigation/native';
+
 
 const { height, width } = Dimensions.get('screen');
 
@@ -67,7 +68,9 @@ const Orders = () => {
         renderItem={({ item }) => <Item item={item} />}
         keyExtractor={item => item.id.toString()}
       />
-         {index==0 && <TouchableOpacity style={styles.orderButton}>
+         {index==0 && <TouchableOpacity
+         onPress={()=>navigation.navigate('Add Order')}
+         style={styles.orderButton}>
         <Text style={styles.orderButtonText}>New Order</Text>
 
       </TouchableOpacity>} 
@@ -80,15 +83,16 @@ const Orders = () => {
     second: renderAssignmentList,
   });
   const Item = React.memo(({ item }) => (
+
     <View style={{ marginTop: height * 0.02 }}>
       <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'700', color:'#031D53' }}>Price</Text>
-      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'700', color:'#031D53' }}>{item?.price}</Text>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:'#031D53', fontSize:width*0.05 }}>Price</Text>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:'#031D53', fontSize:width*0.05 }}>{item?.price}</Text>
 
       </View>
       <View style={styles.item}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between',marginHorizontal:16, paddingVertical:20 }}>
-          <Text style={{ color: '#031D53', fontWeight: '400', fontSize: width * 0.04 }}>{item?.assignments_id}</Text>
+          <Text style={{ color: '#031D53', fontWeight: 'bold', fontSize: width * 0.04 }}>{item?.assignments_id}</Text>
           {(index==0)?
           <Image source={require('../assetes/images/pending.png')} style={{ height: width * 0.05, width: width * 0.05 }} />
           :<Icon name="check-circle" color={'#09C126'} size={30} />}
@@ -114,11 +118,18 @@ const Orders = () => {
           <Text>{item.deadline || 'N/A'}</Text>
         </View>
         {(index==1) &&
+        <View style={{flexDirection:'row'}}>
         <Pressable
-        onPress={()=>{navigation.navigate('AssignmentRevision')}}
-        style={{backgroundColor:'#FF5F00',borderBottomRightRadius:8,overflow:'hidden', borderBottomLeftRadius:8,marginTop:15}}>
+        onPress={()=>{navigation.navigate('AssignmentDetail',{assignmentId:item?.id})}}
+        style={{backgroundColor:'#031D53', flex:1, borderBottomLeftRadius:8,overflow:'hidden', borderTopLeftRadius:8,marginTop:15}}>
+        <Text style={{color:'#FFF',textAlign:'center', paddingVertical:10}}>See Detail</Text>
+      </Pressable>
+        <Pressable
+        onPress={()=>{navigation.navigate('AssignmentRevision',{assignmentId:item?.id})}}
+        style={{backgroundColor:'#FF5F00', flex:1,borderBottomRightRadius:8,overflow:'hidden', borderTopRightRadius:8,marginTop:15}}>
         <Text style={{color:'#FFF',textAlign:'center', paddingVertical:10}}>Apply for Rivision</Text>
       </Pressable>
+      </View>
         }
       </View>
       
@@ -142,6 +153,7 @@ const styles = StyleSheet.create({
   mainContainer: {
     height: height,
     width: width,
+    flex:1,
     backgroundColor: '#FFF',
   },
   tabBar: {

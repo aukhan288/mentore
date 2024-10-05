@@ -2,19 +2,32 @@ import React, { useState } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
+import { forgotPassword } from '../services/userServices'
 const { height, width } = Dimensions.get('screen');
 const ForgotPassword = () => {
   const [showPassword, setShowPassword] = useState(false);
+  const [email, setEmail] = useState(null);
   const navigation = useNavigation();
+  const submit =()=>{
+       forgotPassword({email:email})
+       .then(res=>{
+        console.log('aaaaaaaa',res)
+        
+       })
+
+  }
   return (
     <View style={styles.mainContainer}>
    
       <View style={styles.formView}>
         <TextInput 
           placeholder="Email" 
-          keyboardType="email-address" 
+          keyboardType="email-address"
+          onChangeText={(txt)=>setEmail(txt)} 
           style={styles.textInput} />
-        <TouchableOpacity style={styles.loginBtn}>
+        <TouchableOpacity 
+        onPress={()=>submit()}
+        style={styles.loginBtn}>
           <Text style={styles.loginText}>Submit</Text>
         </TouchableOpacity>
         

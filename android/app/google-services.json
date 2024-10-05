@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "296692430292",
+    "project_id": "mentore-a1912",
+    "storage_bucket": "mentore-a1912.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:296692430292:android:7ddb83f111dc29fc9b5241",
+        "android_client_info": {
+          "package_name": "com.mentore"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDDlMn0B7POP4InBqq2ovo-CuQs3fLUc4E"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

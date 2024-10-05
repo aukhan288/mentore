@@ -26,14 +26,15 @@ const [label,setLable]=useState(null)
         >
           {label}
         </Text>
+       
         <TextInput
           value={props?.text}
-          onChangeText={(text)=>props.setText(text)}
+          onChangeText={(text)=>{props.setText(text),props?.setErr && props?.setErr(null)}}
           onBlur={() => setInputFocused(false)}
           onFocus={() => setInputFocused(true)}
           placeholder=" "
           editable={props?.editAble}
-          style={styles.input}
+          style={[styles.input,{borderColor: props?.err?'red':'#0003',}]}
         />
       </View>
     </View>
@@ -60,7 +61,6 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderRadius: 8,
-    borderColor: '#0003',
     paddingVertical: 15,
     paddingHorizontal: 10,
     fontSize: 16,

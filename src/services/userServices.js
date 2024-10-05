@@ -3,10 +3,12 @@
 import axios from 'axios';
 
 // Base URL for your API
-const BASE_URL = 'http://127.0.0.1:8000/';
-// const BASE_URL = 'https://app.assignmentmentor.co.uk/mentore-api/';
+// const BASE_URL = 'http://127.0.0.1:8000/';
+const BASE_URL = 'https://app.assignmentmentor.co.uk/';
 const IMAGE_PATH = 'storage/app/public/';
 let token = null;
+let udid = null;
+let fcmChanelId =null;
 
 export const setToken = (newToken) => {
   token = newToken;
@@ -15,7 +17,21 @@ export const setToken = (newToken) => {
 export const getToken = () => {
   return token;
 };
-const API = 'api';
+export const setUdid = (newUdid) => {
+  udid = newUdid;
+};
+
+export const getUdid = () => {
+  return udid;
+};
+export const setFcmChanelId = (newFcmChanelId) => {
+    fcmChanelId = newFcmChanelId;
+};
+
+export const getFcmChanelId = () => {
+  return fcmChanelId;
+};
+const API = 'public/api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
 export {BASE_URL, IMAGE_PATH};
@@ -45,7 +61,7 @@ export const createUser = async (userData) => {
         return response.data; // Return response data
     })
     .catch(error => {
-        console.log('error: ',error?.response?.data);
+        console.log('error: ',error);
         
         let err = {
             status:error?.response?.status,
@@ -512,6 +528,29 @@ export const assignmentPrice = async (level) => {
             'Accept': 'application/json',
             'Content-Type': 'application/json',
             'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('Response received:', response?.data); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const forgotPassword = async (props) => {
+    console.log('================$$$$$$$$$$$',props)
+
+    return axios.post(`${BASE_URL+API}/forgot-password`, {email:props?.email}, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
         },
     })
     .then(response => {

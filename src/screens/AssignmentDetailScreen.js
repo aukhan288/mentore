@@ -22,7 +22,7 @@ import DocumentPicker, {
 
 const { height, width } = Dimensions.get('screen');
 
-const AssignmentRevision = (props) => {
+const AssignmentDetail = (props) => {
   const user = useSelector((state) => state.userReducer.userInfo);
   const [assignment, setAssignment] = useState(null);
   const [referralCode, setReferralCode] = useState(null);
@@ -224,7 +224,7 @@ const configfb = {
       <View style={styles.card}>
            <Text style={{ color: '#FFF', fontWeight: '400', borderRadius:8, fontSize: width * 0.04, backgroundColor:'#031D53',textAlign:'center', paddingVertical:10, marginBottom:10 }}>{assignment && assignment?.assignments_id}</Text>
 
-        {/* <View style={styles.itemDetailRow}>
+        <View style={styles.itemDetailRow}>
           <Text> {assignment && assignment?.subject} </Text>
         </View>
         <View style={styles.itemDetailRow}>
@@ -254,16 +254,16 @@ const configfb = {
               <Text>{att?.path}</Text>
             </View> 
           )
-        })} 
+        })}
           <Pressable
         onPress={()=>{downloadAssignment(assignment)}}
         style={{backgroundColor:'#031D53',overflow:'hidden', borderRadius:8,marginTop:15}}>
         <Text style={{color:'#FFF',textAlign:'center', paddingVertical:10}}>Download Now</Text>
-      </Pressable> */}
+      </Pressable> 
       </View>   
     
     </View>
-    {/* {assignment && assignment.revisions?.length > 0 &&
+    {assignment && assignment.revisions?.length > 0 &&
     <View style={styles.historyCard}>
     <Pressable
     onPress={()=>{setShowRevisions(!showRevisions)}}
@@ -316,13 +316,13 @@ const configfb = {
     
 }
 
-    */}
+   
 
         
 
    
 
-        <TouchableOpacity
+        {/* <TouchableOpacity
           style={styles.datePicker}
           onPress={() => setOpen(true)}
         >
@@ -345,9 +345,9 @@ const configfb = {
           onCancel={() => {
             setOpen(false);
           }}
-        />
+        /> */}
 
-        <View style={styles.pageCounter}>
+        {/* <View style={styles.pageCounter}>
           <Pressable
             onPress={() => { numberOfPages > 1 && setNumberOfPages(numberOfPages - 1) }}
             style={styles.counterButton}
@@ -361,9 +361,9 @@ const configfb = {
           >
             <Image style={styles.counterIcon} source={require('../assetes/images/add.png')} />
           </Pressable>
-        </View>
+        </View> */}
 
-        <View style={styles.instructionContainer}>
+        {/* <View style={styles.instructionContainer}>
           <Text style={{position:'absolute', color:specificInstruction?'#031D53':'#e2e2e2',fontWeight:specificInstruction?'700':'100', top:specificInstruction?-10:10, left:10}}>{specificInstruction?'Specific Instructions':'Write Specific Instructions for Writer'}</Text>
           <TextInput
             multiline={true}
@@ -371,22 +371,22 @@ const configfb = {
             onChangeText={(txt)=>setSpecificInstruction(txt)}
             value={specificInstruction}
           />
-        </View>
-          <Text style={styles.instructionText}>
+        </View> */}
+          {/* <Text style={styles.instructionText}>
             Click <Text style={styles.boldText}>Browse</Text>, to select a file, and then click <Text style={styles.boldText}>Upload</Text>,
             You can upload multiple files.
-          </Text>
+          </Text> */}
        
-      <Pressable
+      {/* <Pressable
       onPress={()=>documentUpload()}
       style={{flexDirection:'row',marginBottom:20, justifyContent:'space-between', borderColor:'#e2e2e2',alignItems:'center',
         borderWidth:1, marginHorizontal:width*0.04,
         overflow:'hidden', borderRadius:7}}>
         <Text style={{paddingLeft:10}}>Drop file(s) here.</Text>
         <Text style={{backgroundColor:'#031D53', paddingVertical:15, paddingHorizontal:10,color:'#FFF'}}>Browse..</Text>
-      </Pressable>
+      </Pressable> */}
     
-        {attachments?.length>0 && attachments?.map((att,index)=>{          
+        {/* {attachments?.length>0 && attachments?.map((att,index)=>{          
           return(
             <View
             key={index}
@@ -401,16 +401,16 @@ const configfb = {
               </Pressable>
             </View> 
           )
-        })} 
+        })}  */}
       
-        <View style={{borderBottomWidth:1,marginHorizontal:width*0.05,marginVertical:height*0.02, borderBottomColor:'#e2e2e2'}}></View>
-        <Pressable
+        {/* <View style={{borderBottomWidth:1,marginHorizontal:width*0.05,marginVertical:height*0.02, borderBottomColor:'#e2e2e2'}}></View> */}
+        {/* <Pressable
         onPress={()=>submit()}
         style={{backgroundColor:'#FF5F00',justifyContent:'center', marginHorizontal:width*0.05,alignItems:'center',paddingVertical:15,borderRadius:7, marginTop:20}}
         >
           <Text style={{color:'#FFF',fontWeight:'700'}}>Proceed</Text>
         
-        </Pressable>
+        </Pressable> */}
      
 
       </View>
@@ -421,6 +421,7 @@ const configfb = {
 const styles = StyleSheet.create({
   mainContainer: {
  flex:1,
+ minHeight:height,
     width: width,
     paddingVertical: 40,
     backgroundColor: '#FFFFFF',
@@ -578,4 +579,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default AssignmentRevision;
+export default AssignmentDetail;

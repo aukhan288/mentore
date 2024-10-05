@@ -5,10 +5,7 @@ import { store } from './redux/store';
 
 
 
-const Main =()=>{   
-
-   
-
+const Main =  ()=>{   
     return(
         <Provider store={store}>
         <MainStackNavigation />
