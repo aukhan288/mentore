@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native"
+import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet, Alert } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { forgotPassword } from '../services/userServices'
@@ -12,7 +12,10 @@ const ForgotPassword = () => {
        forgotPassword({email:email})
        .then(res=>{
         console.log('aaaaaaaa',res)
-        
+        Alert.alert(res?.message)
+        if(res?.success){
+          navigation.navigate('ForgotOTP',{'otp':res?.otp,'email':res?.email})
+        }
        })
 
   }

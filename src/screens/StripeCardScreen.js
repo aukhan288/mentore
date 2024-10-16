@@ -1,11 +1,12 @@
 import React, { useState, useRef } from "react";
-import { View, Text, TextInput, Image,Alert, TouchableOpacity, Modal, Dimensions, StyleSheet, ImageBackground } from "react-native"
+import { View, Text, TextInput, Image,Alert, TouchableOpacity, Modal, ActivityIndicator, Dimensions, StyleSheet, ImageBackground } from "react-native"
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import { captureRef } from 'react-native-view-shot';
 import { CameraRoll } from "@react-native-camera-roll/camera-roll";
 import { rechargeWallet } from '../services/userServices'
+import Spinner from 'react-native-loading-spinner-overlay';
   
 const { height, width } = Dimensions.get('screen');
 
@@ -19,9 +20,11 @@ const [cardExpiry, setCardExpiry]=useState(null);
 const [cardNumber, setCardNumber]=useState(null);
 const [amount, setAmount]=useState(0);
 const [cardHolder, setCardHolder]=useState(null);
+const [loading, setLoading]=useState(false);
   const navigation = useNavigation();
 
   const saveToGallery= async ()=>{
+    
     try {
       // Capture the screenshot
       const uri = await captureRef(viewRef.current, {
@@ -37,6 +40,7 @@ const [cardHolder, setCardHolder]=useState(null);
 
       console.log('Image saved to gallery:', saved);
       Alert.alert('Success', 'Image saved to gallery!');
+      setSlipModal(false)
     } catch (error) {
       console.error('Failed to capture screenshot or save image:', error);
       Alert.alert('Error', 'Failed to capture screenshot or save image.');
@@ -45,11 +49,11 @@ const [cardHolder, setCardHolder]=useState(null);
 
   const confirmPayment=()=>{
     setConfirmationModal(false),
+    recharge()
     
-    setSlipModal(true)
   }
   const recharge=()=>{
-    
+    setLoading(true)
     rechargeWallet({
       amount:amount,
       cardHolder:cardHolder,
@@ -58,18 +62,22 @@ const [cardHolder, setCardHolder]=useState(null);
       cardNumber:cardNumber
     })
     .then(res=>{
-      saveToGallery()
+      setSlipModal(true)
+      setLoading(false)
+      
       console.log('%%%%%%%%%%%%%%%%%%%%%%',res)
       
     })
   }
   return (
     <View style={styles.mainContainer}>
+      {loading && <Spinner visible={loading} textContent={'Loading...'} textStyle={{color:'#FFF'}} />}
        <View style={{marginHorizontal:width*0.04, borderWidth:1, marginTop:20, borderColor:'#e2e2e2',}}>
        <TextInput
         style={{paddingVertical:20, }}
         onChangeText={(txt)=>{setAmount(txt)}}
         placeholder="Enter Ammount"
+        keyboardType="numeric"
         value={amount}
         />
        </View>
@@ -78,6 +86,7 @@ const [cardHolder, setCardHolder]=useState(null);
         style={{paddingVertical:20, }}
         onChangeText={(txt)=>{setCardHolder(txt)}}
         placeholder="Enter card holder name"
+        keyboardType="name-phone-pad"
         value={cardHolder}
         />
        </View>
@@ -88,6 +97,7 @@ const [cardHolder, setCardHolder]=useState(null);
         style={{paddingVertical:20, }}
         onChangeText={(txt)=>{setCardNumber(txt)}}
        placeholder="Card Number"
+       keyboardType="number-pad"
         />
         <View style={{flexDirection:'row',alignItems:'center'}}>
         <Image source={require('../assetes/images/visa-card.png')} style={{width:46, height:30}} />
@@ -98,6 +108,7 @@ const [cardHolder, setCardHolder]=useState(null);
        <View style={{flexDirection:'row', justifyContent:'space-between', width:'100%', alignItems:'center', paddingHorizontal:10}}>
             <TextInput 
             placeholder="MM/YY"
+            keyboardType="numeric"
             onChangeText={(txt)=>setCardExpiry(txt)}
             style={{paddingVertical:20, borderRightWidth:1, borderColor:'#e2e2e2', flex:0.5}}
             />
@@ -106,6 +117,7 @@ const [cardHolder, setCardHolder]=useState(null);
             placeholder="CVC"
             onChangeText={(txt)=>setCvc(txt)}
             style={{paddingVertical:20, paddingLeft:10, flex:0.8}}
+            keyboardType="numeric"
             />
             <Image
             source={require('../assetes/images/master-card.png')}
@@ -139,20 +151,21 @@ const [cardHolder, setCardHolder]=useState(null);
         <View
         
         style={{   margin: 20,
-    backgroundColor: '#FFF',
-    borderRadius: 15,
-    width:width*0.9,
-    zIndex:9999,
-    shadowColor: '#000',
-    shadowOffset: {
-      width: 0,
-      height: 2,
-    },
-    overflow:'hidden',
-    justifyContent:'center',
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    elevation: 5,}}>
+            backgroundColor: '#FFF',
+            borderRadius: 15,
+            width:width*0.9,
+            zIndex:9999,
+            shadowColor: '#000',
+            shadowOffset: {
+              width: 0,
+              height: 2,
+            },
+            overflow:'hidden',
+            justifyContent:'center',
+            shadowOpacity: 0.25,
+            shadowRadius: 4,
+            elevation: 5,
+            }}>
         <View style={{alignItems:'center', paddingVertical:height*0.04}}>
         <Image
         style={{width:width*0.3, height:width*0.3}}
@@ -222,7 +235,7 @@ const [cardHolder, setCardHolder]=useState(null);
             <Text style={{color:'#031D53', fontWeight:'bold', fontSize:width*0.06}}>Transaction Successful</Text>
             <Text style={{color:'#838A93', fontWeight:'700', marginBottom:height*0.04}}>Your order has been confirmed</Text>
             <Text style={{color:'#838A93', fontWeight:'700'}}>Transferred Amount</Text>
-            <Text style={{color:'#031D53', fontWeight:'bold', fontSize:width*0.06}}>200.00 GBP</Text>
+            <Text style={{color:'#031D53', fontWeight:'bold', fontSize:width*0.06}}>{amount} GBP</Text>
         </View>
         <View style={{position:'relative', width:'100%', marginBottom:height*0.06, justifyContent:'center'}}>
         <View style={{position:'absolute',height:width*0.06,width:width*0.06, backgroundColor:'#031D53',  borderRadius:100, left:-width*0.03}}></View>
@@ -238,8 +251,8 @@ const [cardHolder, setCardHolder]=useState(null);
             style={{flex:1, paddingVertical:15, justifyContent:'center', alignItems:'center', backgroundColor:'#D9D9D9'}}>
                 <Text>Cancle</Text>
             </TouchableOpacity>
-            <TouchableOpacity 
-            onPress={()=>recharge()}
+            <TouchableOpacity
+            onPress={()=>saveToGallery()}
             style={{flex:1, paddingVertical:15, justifyContent:'center', alignItems:'center', backgroundColor:'#031D53'}}>
                 <Text style={{color:'#FFF'}}>Save to Gallery</Text>
             </TouchableOpacity>

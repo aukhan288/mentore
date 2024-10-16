@@ -1,4 +1,4 @@
-import { AppRegistry } from 'react-native';
+import { AppRegistry,PermissionsAndroid } from 'react-native';
 import 'react-native-gesture-handler'; 
 import App from './App';
 import { name as appName } from './app.json';
@@ -6,6 +6,10 @@ import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
 
 // Create a function to configure the notification channel
+messaging().requestPermission();
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.POST_NOTIFICATIONS);
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.READ_EXTERNAL_STORAGE);
+PermissionsAndroid.request(PermissionsAndroid.PERMISSIONS.WRITE_EXTERNAL_STORAGE);
 const configureNotificationChannel = () => {
     PushNotification.createChannel(
         {
@@ -46,6 +50,7 @@ messaging().onMessage(async (remoteMessage) => {
         message: remoteMessage.notification?.body || 'You have a new message.',
     });
 });
+messaging().requestPermission();
 
 // Register the main application component
 AppRegistry.registerComponent(appName, () => App);

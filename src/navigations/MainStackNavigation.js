@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, ActivityIndicator, Image, Dimensions, Alert, Modal, Platform, Text } from 'react-native';
+import { View, ActivityIndicator, Image, Dimensions, Alert, Modal, Platform, PERMISSIONS, Text } from 'react-native';
 import { useSelector, useDispatch } from 'react-redux';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { getData } from '../asyncStorage';
@@ -21,14 +21,18 @@ import { getProfile, setUdid } from '../services/userServices';
 import { setToken } from '../services/userServices'; // Import the token management functions
 import messaging from '@react-native-firebase/messaging';
 import PushNotification from 'react-native-push-notification';
+import ForgotOTP from '../screens/ForgotOTP'
+import ChangeForgotPassword from '../screens/ChangeForgotPasswordScreen'
 
 
 const Stack = createNativeStackNavigator();
 const {hieght, width}=Dimensions.get('screen')
-function MainStackNavigation() {
+function MainStackNavigation(props) {
+  
   const user = useSelector((state) => state.userReducer.userInfo);
   const dispatch = useDispatch();
   const [isLoading, setIsLoading] = useState(true);
+ console.log('>>>>>>>>>>>>>>>>>***********',user);
  
 
   useEffect(() => {
@@ -46,7 +50,13 @@ function MainStackNavigation() {
         if (token) {
           setToken(token); // Set the token using the new function
           const res = await getProfile(token);
-          dispatch(setUser(res));
+          console.log('ffffffffffff',res);
+          if(res?.success){
+            dispatch(setUser(res?.user));
+          }else{
+            dispatch(setUser(null));
+          }
+          
         }
       } catch (error) {
         console.error('Failed to fetch token or user profile:', error);
@@ -57,6 +67,7 @@ function MainStackNavigation() {
 
     fetchData();
   }, [dispatch]);
+
 
   if (isLoading) {
     return (
@@ -158,6 +169,26 @@ function MainStackNavigation() {
               headerStyle: { backgroundColor: '#1B2A56' },
               headerTintColor: '#FFF',
               headerTitle: 'Forgot Password',
+            }}
+          />
+          <Stack.Screen
+            name="ChangeForgotPassword"
+            component={ChangeForgotPassword}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#1B2A56' },
+              headerTintColor: '#FFF',
+              headerTitle: 'ChangeForgotPassword',
+            }}
+          />
+          <Stack.Screen
+            name="ForgotOTP"
+            component={ForgotOTP}
+            options={{
+              headerShown: true,
+              headerStyle: { backgroundColor: '#1B2A56' },
+              headerTintColor: '#FFF',
+              headerTitle: 'Forgot OTP',
             }}
           />
         </>

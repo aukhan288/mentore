@@ -5,11 +5,11 @@ import { useSelector, useDispatch } from 'react-redux';
 import ImagePicker from 'react-native-image-crop-picker';
 import { setUser } from '../redux/userReducer'
 import { getData } from "../asyncStorage";
-import { COLORS } from "../config";
+import { COLORS, COUNTRY_LIST } from "../config";
 import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
 import { CountryPicker } from "react-native-country-codes-picker";
-import { updateUser, BASE_URL, IMAGE_PATH, getToken } from "../services/userServices";
+import { updateUser, BASE_URL, IMAGE_PATH, updateProfile, attachmentUpload, getToken, API } from "../services/userServices";
 import { setData } from '../asyncStorage'
 
 const { height, width } = Dimensions.get('screen');
@@ -21,18 +21,19 @@ const EditProfile = (props) => {
   const [updatedUserContact, setUpdatedUserContact] = useState(null)
   const [signUpLoader, setSignUpLoader] = useState(false)
 
-console.log('***********',user);
 
   const [show, setShow] = useState(false);
   const [updatedCountryCode, setUpdatedCountryCode] = useState(null);
   const [updatedCountryFlag, setUpdatedCountryFlag] = useState(null);
 
   useEffect(() => {
-    setUpdatedUserImage(BASE_URL+IMAGE_PATH+user?.image)
+    if(user?.image){
+      setUpdatedUserImage(user?.image)
+    }
     setUpdatedUserName(user?.name)
     setUpdatedUserEmail(user?.email)
     setUpdatedCountryFlag(user?.country_flag)
-    setUpdatedCountryCode(user?.country_code)
+    user?.country_code && setUpdatedCountryCode(user?.country_code)
     setUpdatedUserContact(user?.contact)
   }, [user])
 
@@ -44,99 +45,92 @@ console.log('***********',user);
     })
   }
   const saveChanges = async () => {
-    const token = getToken();
-    //  updateUser({
-    //     id:user?.id,
-    //     name:updatedUserName,
-    //     countryFlag:updatedCountryFlag,
-    //     countryCode:updatedCountryCode,
-    //     contact:updatedUserContact,
-    //     image:updatedUserImage,
-    //     plate_form:Platform?.OS
-    //  },user?.token)
 
-     const data = new FormData();
-     
-         // Append form data
-         data.append('name', updatedUserName || '');
-         data.append('country_flag', updatedCountryFlag || '');
-         data.append('country_code', updatedCountryCode || '');
-         data.append('contact', updatedUserContact || '');
-         data.append('plate_form', Platform?.OS || '');
-     
-     
-             data.append('image', {
-              uri: updatedUserImage,
-              type: 'image/jpeg', // or the actual type of the file
-              name: 'image.jpg' // or the actual file name
-          }
-        );
-     
-         try {
-             const response = await axios.post(
-                 `https://app.assignmentmentor.co.uk/mentore-api/public/api/profile-update/${user?.id}`,
-                 data,
-                 {
-                     headers: {
-                         'Accept':'application/json',
-                         'Content-Type': 'multipart/form-data',
-                         'Authorization': `Bearer ${token}`,
-                     },
-                 }
-             );
-           
-           
-             
-             setUser(response?.data?.data?.user)
-             console.log(user);
-             
-             
-             return response.data;
-         } catch (error) {
-             console.error('Error:', error.response ? error.response.data : error.message);
-             let err = {
-                 status: error.response ? error.response.status : 'Unknown',
-                 data: error.response ? error.response.data : error.message,
-             };
-             return Promise.reject(err);
-         }
+    updateProfile({
+      user_id:user?.id,
+      name:updatedUserName,
+      country_code:updatedCountryCode,
+      contact:updatedUserContact,
+      image:updatedUserImage
+    })
+    .then(res=>{
+      console.log('rrrrrrrrrrrrrr',res);
+      if(res?.code==200){
+        setUser(res?.data?.user)
+      }
+      
+    })
+
   };
 
 
 
   const openGallery = async () => {
-
-    // Launch the image library
     try {
-      const result = await ImagePicker.openPicker({
-        width: 150, // Set the width of the cropped area
-        height: 150, // Set the height of the cropped area
-        cropping: true, // Enable cropping
-        cropperCircleOverlay: true, // Show a circular overlay for cropping
-      });
+        // Launch the image library
+        const result = await ImagePicker.openPicker({
+            width: 150, // Set the width of the cropped area
+            height: 150, // Set the height of the cropped area
+            cropping: true, // Enable cropping
+            cropperCircleOverlay: true, // Show a circular overlay for cropping
+        });
 
-      // Log the result to see the image data
+        const token = getToken();
+        const data = new FormData();
 
-      // Get the cropped image URI
-      const imageUri = result.path;
-      console.log('mmmmmmmmm',result);
-      setUpdatedUserImage(imageUri)
-      console.log(imageUri);
+        // Check if the attachment is available and append it
+        if (result) {
+            // Ensure `attachment` is a valid object and its properties are available
+            data.append('attachment', {
+                uri: result.path, // Use result.path directly
+                type: result.mime, // Ensure this is the correct MIME type
+                name: `${user?.name || 'image'}.${result.mime.split('/')[1]}`, // Use a default name and add the extension
+            });
+        } else {
+            return Promise.reject({ status: 'No Attachment', data: 'No file provided for upload' });
+        }
+
+        // Send the POST request
+        const response = await axios.post(
+            `${BASE_URL + API}/file-upload`,
+            data,
+            {
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                    'Authorization': `Bearer ${token}`,
+                },
+            }
+        );
+
+        console.log('Response received:', response.data?.file_path);
+          
+        // Get the cropped image URI and log it
+        const imageUri = result.path;
+        console.log('Cropped image URI:', imageUri);
+        setUpdatedUserImage(response.data?.file_path);
+        
     } catch (error) {
-      console.error('Error opening gallery: ', error);
+        // Handle and log errors appropriately
+        console.error('Error opening gallery: ', error);
+        if (error.response) {
+            console.error('Upload error response:', error.response.data);
+        }
     }
+};
 
-  };
   return (
     <ScrollView height={height}>
+      {console.log(updatedUserImage)}
+      
       <View style={styles.mainContainer}>
         <View style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', height: height * 0.4, paddingTop: height * 0.02 }}>
           <View style={{ position: 'relative' }}>
-            {console.log(updatedUserImage)
+            {console.log('1111111111',BASE_URL+IMAGE_PATH+updatedUserImage)
             }
             <Image  source={
               updatedUserImage
-                ? { uri: updatedUserImage }
+                ? { uri: BASE_URL+IMAGE_PATH+updatedUserImage }
                 : require('../assetes/images/profile.png')
             } style={{ borderWidth: 2, borderColor: '#FF5F00', borderRadius: 100, height: width * 0.35, width: width * 0.35 }} />
 
@@ -150,7 +144,6 @@ console.log('***********',user);
         </View>
 
         <View style={{ width: width, padding: width * 0.04, backgroundColor: '#FFF', height: height * 0.75, bottom: 0, position: 'absolute', paddingTop: height * 0.05 }}>
-
           <View style={{ paddingVertical: 20 }}>
             <View style={{ marginBottom: 20, height: 60 }}>
 
@@ -177,9 +170,12 @@ console.log('***********',user);
                 <Text style={{
                   verticalAlign: 'middle'
                 }}>
-                  {updatedCountryCode}
+                  {console.log('nnnnnnnnnnnnnnn', typeof updatedCountryCode,COUNTRY_LIST[updatedCountryCode])
+                  }
+                  {COUNTRY_LIST[updatedCountryCode]?.flag} {updatedCountryCode}
                 </Text>
               </TouchableOpacity>
+             
               <TextInput
                 keyboardType="phone-pad"
                 editable={!signUpLoader}
@@ -194,7 +190,6 @@ console.log('***********',user);
                 initialState={updatedCountryFlag}
                 // when picker button press you will get the country object with dial code
                 pickerButtonOnPress={(item) => {
-                  setUpdatedCountryFlag(item.flag);
                   setUpdatedCountryCode(item.dial_code);
                   setShow(false);
                 }}

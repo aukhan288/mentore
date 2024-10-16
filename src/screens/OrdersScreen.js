@@ -5,6 +5,7 @@ import { useSelector } from 'react-redux';
 import { BASE_URL,IMAGE_PATH, orderList } from "../services/userServices";
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation,useIsFocused } from '@react-navigation/native';
+import { COLORS } from "../config";
 
 
 const { height, width } = Dimensions.get('screen');
@@ -85,12 +86,13 @@ const Orders = () => {
   const Item = React.memo(({ item }) => (
 
     <View style={{ marginTop: height * 0.02 }}>
-      <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:'#031D53', fontSize:width*0.05 }}>Price</Text>
-      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:'#031D53', fontSize:width*0.05 }}>{item?.price}</Text>
+      
+      <View style={styles.item}>
+      <View style={{flexDirection:'row', justifyContent:'space-between',backgroundColor:COLORS.BLUE, paddingVertical:4}}>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:COLORS.LIGTH_GRAY, fontSize:width*0.05 }}>Price</Text>
+      <Text style={{ marginHorizontal: width * 0.04, fontWeight:'bold', color:COLORS.LIGTH_GRAY, fontSize:width*0.05 }}>{item?.price}</Text>
 
       </View>
-      <View style={styles.item}>
         <View style={{ flexDirection: 'row', justifyContent: 'space-between',marginHorizontal:16, paddingVertical:20 }}>
           <Text style={{ color: '#031D53', fontWeight: 'bold', fontSize: width * 0.04 }}>{item?.assignments_id}</Text>
           {(index==0)?
@@ -183,7 +185,8 @@ const styles = StyleSheet.create({
   },
   item: {
     backgroundColor: '#FFF',
-    padding: 4,
+    paddingBottom: 4,
+    overflow:'hidden',
     marginVertical: 8,
     marginHorizontal: 16,
     borderRadius: 8,

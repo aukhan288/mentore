@@ -1,11 +1,12 @@
 // services/apiService.js
 
 import axios from 'axios';
+import messaging from '@react-native-firebase/messaging';
 
 // Base URL for your API
 // const BASE_URL = 'http://127.0.0.1:8000/';
 const BASE_URL = 'https://app.assignmentmentor.co.uk/';
-const IMAGE_PATH = 'storage/app/public/';
+const IMAGE_PATH = 'public/';
 let token = null;
 let udid = null;
 let fcmChanelId =null;
@@ -34,21 +35,26 @@ export const getFcmChanelId = () => {
 const API = 'public/api';
 
 // const BASE_URL = 'http://127.0.0.1:8000/api';
-export {BASE_URL, IMAGE_PATH};
+export {BASE_URL, IMAGE_PATH, API};
 // Function to send a POST request
 export const createUser = async (userData) => {
+    const fcmToken = await messaging().getToken();
 
 
     const data = {
             name:userData?.name,
             email:userData?.email,
             contact:userData?.contact,
-            country_code:userData?.country_code,
-            country_flag:userData?.country_flag,
+            country_code: {
+                code: userData?.country_code?.code,
+                flag: userData?.country_code?.flag
+            },
             dob:userData?.dob,
             plate_form:userData?.plate_form,
             password:userData?.password,
-            // confirmPassword:userData?.password
+            fcmToken:fcmToken,
+            password_confirmation:userData?.password_confirmation
+            
     };
     return axios.post(`${BASE_URL+API}/signup`, data, {
         headers: {
@@ -123,6 +129,7 @@ export const attachmentUpload = async (attachment) => {
     const token = getToken();
     const data = new FormData();
 
+
     // Check if the attachment is available and append it
     if (attachment) {
         // Ensure `attachment` is a valid object and its properties are available
@@ -165,11 +172,11 @@ export const attachmentUpload = async (attachment) => {
 
 export const loginUser = async (userData) => {
   
-
+    const fcmToken = await messaging().getToken();
     const data = {
             email:userData?.email,
             password:userData?.password,
-            // confirmPassword:userData?.confirmPassword
+            fcmToken:fcmToken,
     };
     console.log('***********',data)
     return axios.post(`${BASE_URL+API}/login`, data, {
@@ -183,7 +190,7 @@ export const loginUser = async (userData) => {
         return response.data; // Return response data
     })
     .catch(error => {
-        console.log(error);
+        console.log('=============',error);
         
         let err = {
             status:error?.response?.status,
@@ -518,9 +525,10 @@ export const rechargeWallet = async (props) => {
     });
     
 };
+
 export const assignmentPrice = async (level) => {
     console.log('================$$$$$$$$$$$',level)
-    
+
     const token = getToken();
 
     return axios.get(`${BASE_URL+API}/assignment-price/${level?.id}`,  {
@@ -559,6 +567,153 @@ export const forgotPassword = async (props) => {
     })
     .catch(error => {
         console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+
+export const userLogout = async () => {
+    console.log('================$$$$$$$$$$$')
+    const token = getToken();
+    return axios.post(`${BASE_URL+API}/user-logout`,{}, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        console.log('Response received:', response?.data); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error received:', error);
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+
+export const updateProfile = async (props) => {
+    const token = getToken();
+    
+
+    let data={
+        name:props?.name,
+        country_code:props?.country_code,
+        contact:props?.contact,
+        image:props?.image
+    };
+  
+
+    console.log('Sending data:', JSON.stringify(data)); // Log the data being sent
+  
+    return axios.post(`${BASE_URL+API}/profile-update/${props?.user_id}`, data, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const verifyOtp = async (props) => {
+  
+    return axios.post(`${BASE_URL+API}/verifyOtp`, {email:props?.email,otp:props?.otp}, {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const submitForgotPassword = async (props) => {
+    let data ={
+        changePassword:props?.changePassword, 
+        confirmChangePassword:props?.confirmChangePassword, 
+        otp:props?.otp,
+        email:props?.email
+    }
+    console.log(JSON.stringify(data));
+    
+    return axios.post(`${BASE_URL+API}/changeForgotPassword`, JSON.stringify(data), {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+        },
+    })
+    .then(response => {
+        // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
+        let err = {
+            status:error.response.status,
+            data:error.response.data
+        }
+        return err; // Return error details as rejected promise
+    });
+    
+};
+export const changePassword = async (props) => {
+    const token = getToken();
+
+    let data ={
+        current_password:props?.oldPassword, 
+        newPassword:props?.newPassword, 
+        confirmPassword:props?.newConfirmPassword
+    }
+    console.log(JSON.stringify(data));
+    
+    return axios.put(`${BASE_URL+API}/changePassword/${props?.user_id}`, JSON.stringify(data), {
+        headers: {
+            'Accept': 'application/json',
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+        },
+    })
+    .then(response => {
+        // console.log('Response received:', response); // Log the response data
+        return response.data; // Return response data
+    })
+    .catch(error => {
+        console.log('error: ',error.response.data);
+        
         let err = {
             status:error.response.status,
             data:error.response.data
