@@ -1,8 +1,8 @@
-import React, { useState } from "react";
+import React, { useState, useCallback } from "react";
 import { View, Text, TextInput, Image, TouchableOpacity, Dimensions, StyleSheet } from "react-native";
 import { setData } from "../asyncStorage";
 import Icon from 'react-native-vector-icons/FontAwesome';
-import { useNavigation } from '@react-navigation/native';
+import { useNavigation, useFocusEffect } from '@react-navigation/native';
 import CheckBox from '@react-native-community/checkbox';
 import { loginUser, setToken } from '../services/userServices';
 import ErrorComponent from "../components/ErrorComponent";
@@ -42,11 +42,13 @@ const Login = () => {
     const result = await loginUser({ email, password });
 
     setLoginLoader(false);
-    if (result.code === 200) {
+    console.log('mmmmmmmmmmmm',result.data.user);
+    
+    if (result?.code === 200) {
       // Dispatch user info to Redux
-      dispatch(setUser(result.data.user));
-      setToken(result.data.user.token);
-      await setData('@token', result.data.user.token);
+      dispatch(setUser(result?.data?.user));
+      setToken(result?.data?.user?.token);
+      await setData('@token', result?.data?.user?.token);
       navigation.navigate('DrawerStack');
     } else {
       // Handle errors
@@ -63,6 +65,19 @@ const Login = () => {
       }
     }
   };
+
+  useFocusEffect(
+    useCallback(() => {
+      const onBeforeRemove = (e) => {
+        // Prevent back gesture
+        e.preventDefault();
+      };
+
+      const unsubscribe = navigation.addListener('beforeRemove', onBeforeRemove);
+
+      return unsubscribe; // Clean up the listener on unmount
+    }, [navigation])
+  );
 
   return (
     <View style={styles.mainContainer}>
@@ -91,7 +106,7 @@ const Login = () => {
         <View style={styles.passwordInputRow}>
           <TextInput
             placeholder="Password"
-            style={{ flex: 0.9 }}
+            style={{ flex: 0.97 }}
             onChangeText={setPassword}
             secureTextEntry={!showPassword}
           />

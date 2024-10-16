@@ -30,7 +30,7 @@ const Register = (props) => {
   const [showConfirmPassword, setConfirmShowPassword] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [show, setShow] = useState(false);
-  const [countryCode, setCountryCode] = useState(null);
+  const [countryCode, setCountryCode] = useState({"code": "GB", "dial_code": "+44", "flag": "🇬🇧", "name": {"ar": "المملكة المتحدة", "  bg": "Великобритания", "by": "Злучанае Каралеўства", "cn": "英国", "cz": "Spojené království", "da": "Storbritannien", "de": "Vereinigtes Königreich", "ee": "Ühendkuningriik", "el": "Ηνωμένο Βασίλειο", "en": "United Kingdom", "es": "Reino Unido", "fr": "Royaume-Uni", "he": "הממלכה המאוחדת", "it": "Regno Unito", "jp": "イギリス", "nl": "Verenigd Koningkrijk", "pl": "Zjednoczone Królestwo", "pt": "Reino Unido", "ro": "Regatul Unit", "ru": "Объединенное Королевство", "tr": "Birleşik Krallık", "ua": "Об'єднане Королівство", "zh": "英國"}});
   const [countryFlag, setCountryFlag] = useState(null);
   const navigation = useNavigation();
 
@@ -42,20 +42,29 @@ const Register = (props) => {
     setDobError(null)
     setPasswordError(null)
     setConfirmPasswordError(null)
+    console.log('mmmmmmmmmm',typeof countryCode);
+    
     const result = await createUser({ 
       name:name,
       email:email,
       contact:contact,
-      country_code:countryCode,
-      country_flag:countryFlag,
-      plate_form:Platform?.OS,
+      country_code: {
+        code: countryCode?.code,
+        flag: countryCode?.flag
+      },
+      plate_form:{
+        "OS":Platform.OS,
+        "Version":Platform.Version,
+        "Brand":Platform.__constants.Brand,
+        "Model":Platform.__constants.Model,
+      },
       dob:'1980-01-01',
       password:password,
-      confirmPassword:confirmPassword 
+      password_confirmation:confirmPassword 
     });
     console.log("************",result);
     
-    if (result.code==201) {
+    if (result.success) {
       setSignUpLoader(false)
       Alert.alert('User created successfully')
         navigation.navigate('Login')
@@ -70,6 +79,8 @@ const Register = (props) => {
             setEmailError(result.data.errors.email)
           }
           if(result.data.errors.hasOwnProperty('contact')){
+            console.log('>>>>>>>>>>>>>>>>>',result.data.errors.contact);
+            
             setCellError(result.data.errors.contact)
           }
           if(result.data.errors.hasOwnProperty('dob')){
@@ -78,8 +89,8 @@ const Register = (props) => {
           if(result.data.errors.hasOwnProperty('password')){
             setPasswordError(result.data.errors.password)
           }
-          if(result.data.errors.hasOwnProperty('confirmPassword')){
-            setConfirmPasswordError(result.data.errors.confirmPassword)
+          if(result.data.errors.hasOwnProperty('password_confirmation')){
+            setConfirmPasswordError(result.data.errors.password_confirmation)
           }
         }
     }
@@ -128,7 +139,7 @@ const Register = (props) => {
         <Text style={{
             verticalAlign:'middle'
         }}>
-            {countryFlag+countryCode}
+            {countryCode?.flag+countryCode?.code}
         </Text>
       </TouchableOpacity>
       <TextInput 
@@ -141,8 +152,12 @@ const Register = (props) => {
         show={show}
         // when picker button press you will get the country object with dial code
         pickerButtonOnPress={(item) => {
-          setCountryFlag(item.flag);
-          setCountryCode(item.dial_code);
+          console.log(item);
+          
+          setCountryCode({
+            code:item?.dial_code,
+            flag:item?.flag
+          });
           setShow(false);
         }}
         style={{
@@ -152,7 +167,7 @@ const Register = (props) => {
         }}
         />
         </View>
-        {dobError && <ErrorComponent error={cellError} />}
+        {cellError && <ErrorComponent error={cellError} />}
 
         <TouchableOpacity
         disabled={signUpLoader}

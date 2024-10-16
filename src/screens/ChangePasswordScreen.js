@@ -1,29 +1,45 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, TextInput } from "react-native"
+import { View, Text, Image, TouchableOpacity, Dimensions, StyleSheet, ScrollView, TextInput, Alert } from "react-native"
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
-import ImagePicker from 'react-native-image-crop-picker';
-import { setUser } from '../redux/userReducer'
-import { getData } from "../asyncStorage";
-import { COLORS } from "../config";
-import axios from 'axios';
 import InputFieledComponent from "../components/InputFieledComponent";
-import { CountryPicker } from "react-native-country-codes-picker";
+import { changePassword } from '../services/userServices';
+import ErrorComponent from "../components/ErrorComponent";
 
 const { height, width } = Dimensions.get('screen');
 const ChangePassword = (props) => {
-  const user = useSelector((state) => state.userReducer.user);
-  const [updatedPassword, setUpdatedPassword] = useState(null)
-  const [updatedNewPassword, setUpdatedNewPassword] = useState(null)
-  const [updatedRetypeNewPassword, setUpdatedRetypeNewPassword] = useState(null)
-
-
-  useEffect(() => {
-    setUpdatedPassword(user?.password)
-    setUpdatedNewPassword(user?.name)
-    setUpdatedRetypeNewPassword(user?.email)
-  }, [user])
-
+  const user = useSelector((state) => state.userReducer.userInfo);
+  
+  const [ oldPassword, setOldPassword]=useState(null)
+  const [ newPassword, setNewPassword]=useState(null)
+  const [ newConfirmPassword, setNewConfirmPassword]=useState(null)
+  const [ oldPasswordError, setOldPasswordError]=useState(null)
+  const [ newPasswordError, setNewPasswordError]=useState(null)
+  const [ newConfirmPasswordError, setNewConfirmPasswordError]=useState(null)
+  const saveChanges=()=>{
+    changePassword({
+      user_id:user?.id,
+      oldPassword:oldPassword, 
+      newPassword:newPassword, 
+      newConfirmPassword:newConfirmPassword
+    })
+    .then(res=>{
+      Alert.alert(res?.message);
+      console.log('kkkkkkkkkkkk',res);
+      
+      if(res?.data?.errors.hasOwnProperty('current_password')){
+        setOldPasswordError(res?.data?.errors?.current_password[0])
+      }
+      if(res?.data?.errors.hasOwnProperty('newPassword')){
+        setNewPasswordError(res?.data?.errors?.newPassword[0])
+      }
+      if(res?.data?.errors.hasOwnProperty('confirmPassword')){
+        setNewConfirmPasswordError(res?.data?.errors?.confirmPassword[0])
+      }
+      
+      
+    })
+  }
 
   return (
     <ScrollView height={height}>
@@ -32,17 +48,26 @@ const ChangePassword = (props) => {
 
        
       <View style={{position:'absolute',top:height*0.15, alignSelf:'center'}}>
-      <View style={{ marginBottom: height*0.04, height: 60,width:width }}>
+      <View style={{  height: 60,width:width }}>
 
-<InputFieledComponent label={'Old Password'} text={updatedPassword} setText={setUpdatedPassword} />
+<InputFieledComponent label={'Old Password'} text={oldPassword} setText={setOldPassword} err={oldPasswordError}/>
 </View>
-<View style={{ marginBottom: height*0.04, height: 60,width:width }}>
-
-<InputFieledComponent label={'New Password'}  text={updatedNewPassword} setText={setUpdatedNewPassword} />
+<View style={{paddingHorizontal:width*0.04,marginBottom: height*0.04,}}>
+<ErrorComponent error={oldPasswordError}/>
 </View>
-<View style={{ marginBottom: height*0.04, height: 60,width:width }}>
+<View style={{  height: 60,width:width }}>
 
-<InputFieledComponent label={'Retype New Password'}  text={updatedRetypeNewPassword} setText={setUpdatedRetypeNewPassword} />
+<InputFieledComponent label={'New Password'}  text={newPassword} setText={setNewPassword} err={newPasswordError}/>
+</View>
+<View style={{paddingHorizontal:width*0.04, marginBottom: height*0.04,}}>
+<ErrorComponent error={newPasswordError}/>
+</View>
+<View style={{  height: 60,width:width }}>
+
+<InputFieledComponent label={'Retype New Password'}  text={newConfirmPassword} setText={setNewConfirmPassword} err={newConfirmPasswordError}/>
+</View>
+<View style={{paddingHorizontal:width*0.04, marginBottom: height*0.04,}}>
+<ErrorComponent error={newConfirmPasswordError}/>
 </View>
 <TouchableOpacity
   onPress={() => saveChanges()}

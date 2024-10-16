@@ -8,6 +8,7 @@ import DatePicker from 'react-native-date-picker';
 import Icon from 'react-native-vector-icons/FontAwesome';
 import { attachmentUpload, submitOrder, assignmentPrice } from '../services/userServices';
 import Spinner from 'react-native-loading-spinner-overlay';
+import { COLORS } from "../config";
 import DocumentPicker, {
   DirectoryPickerResponse,
   DocumentPickerResponse,
@@ -299,7 +300,7 @@ const NewAssignment = () => {
         </View>
 
         <View style={styles.instructionContainer}>
-          <Text style={{position:'absolute', color:specificInstruction?'#031D53':'#e2e2e2',fontWeight:specificInstruction?'700':'100', top:specificInstruction?-10:10, left:10}}>{specificInstruction?'Specific Instructions':'Write Specific Instructions for Writer'}</Text>
+          <Text style={{position:'absolute', color:specificInstruction?COLORS.BLUE:'#e2e2e2',fontWeight:specificInstruction?'700':'100', top:specificInstruction?-10:10, left:10}}>{specificInstruction?'Specific Instructions':'Write Specific Instructions for Writer'}</Text>
           <TextInput
             multiline={true}
             numberOfLines={5}
@@ -311,14 +312,14 @@ const NewAssignment = () => {
             Click <Text style={styles.boldText}>Browse</Text>, to select a file, and then click <Text style={styles.boldText}>Upload</Text>,
             You can upload multiple files.
           </Text>
-       
+ 
       <Pressable
       onPress={()=>documentUpload()}
       style={{flexDirection:'row',marginBottom:20, justifyContent:'space-between', borderColor:'#e2e2e2',alignItems:'center',
         borderWidth:1, marginHorizontal:width*0.04,
         overflow:'hidden', borderRadius:7}}>
         <Text style={{paddingLeft:10}}>Drop file(s) here.</Text>
-        <Text style={{backgroundColor:'#031D53', paddingVertical:15, paddingHorizontal:10,color:'#FFF'}}>Browse..</Text>
+        <Text style={{backgroundColor:COLORS.BLUE, paddingVertical:15, paddingHorizontal:10,color:'#FFF'}}>Browse..</Text>
       </Pressable>
       {attachments.length>0 && attachments?.map((att,index)=>{          
           return(
@@ -464,7 +465,7 @@ const styles = StyleSheet.create({
     fontWeight: '700',
   },
   pageCounter: {
-    backgroundColor: '#031D53',
+    backgroundColor: COLORS.BLUE,
     marginHorizontal: width * 0.04,
     marginVertical: 20,
     borderRadius: 7,

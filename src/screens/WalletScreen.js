@@ -10,22 +10,10 @@ import { useIsFocused } from '@react-navigation/native';
 const Item = (item) => (
   
   <View style={{marginTop:height*0.02, backgroundColor:'#FFF', borderWidth:1, padding:5, borderRadius:5, borderColor:'#e2e2e2', marginHorizontal:width*0.04}}>
-    {console.log(item)}
-      
-        <View style={{flexDirection:'row', justifyContent:'space-between'}}>
-        <View style={{ flexDirection:'row', alignItems:'center' }}>
-       
-         {/* <Icon name='check-circle' size={width*0.06} color='#09C126'/> */}
-         <View style={{flexDirection:'column'}}>
-          <Text style={{fontWeight:'700'}}>{item?.transaction?.card_holder}</Text>
-          <Text style={{fontSize:10, color:'#0007'}}>{item?.transaction?.card_number}</Text>
-         </View>
-        </View> 
-        <View style={{flexDirection:'row',justifyContent:'center', alignItems:'center'}}>
+        <View style={{flexDirection:'row',justifyContent:'space-between', alignItems:'center'}}>
         <Text style={{color:'#B83232', fontWeight:'400', fontSize:width*0.04}}>${item?.transaction?.amount}</Text>
         <Image source={item?.transaction?.transaction_type === 'in' ? require('../assetes/images/down.png') : require('../assetes/images/up.png')} style={{height:20,width:20}} />
         </View> 
-    </View>
     </View>
   );
 const { height, width } = Dimensions.get('screen');
@@ -54,7 +42,7 @@ const Wallet = (props) => {
      <View style={{justifyContent:'center', alignItems:'center',paddingTop:height*0.08, paddingBottom:20}}>
      <Text style={{color:'#FFF', fontWeight:'400', fontSize:width*0.05}}>Your Balence</Text>
      <View style={{flexDirection:'row', alignItems:'center'}}>
-     {showBalence?<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.1}}>{'£ '+ wallet?.balance}</Text>
+     {showBalence?<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.05}}>{'£ '+ wallet?.balance}</Text>
      :<Text style={{color:'#FFF',fontWeight:'700', fontSize:width*0.05}}>****</Text>}
       <TouchableOpacity 
       onPress={()=>setShowBalence(!showBalence)}

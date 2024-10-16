@@ -1,11 +1,12 @@
 import * as React from 'react';
 import 'react-native-gesture-handler';
-import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image } from 'react-native';
-import { NavigationContainer } from '@react-navigation/native';
+import { View, Text, TouchableOpacity, StyleSheet, Dimensions, Image, Pressable } from 'react-native';
+import { NavigationContainer, CommonActions  } from '@react-navigation/native';
 import { createDrawerNavigator } from '@react-navigation/drawer';
 import Home from '../screens/HomeScreen';
 import Orders from '../screens/OrdersScreen';
 import Profile from '../screens/ProfileScreen';
+import GetStartedScreen from '../navigations/MainStackNavigation';
 
 import CustomDrawerHeader from '../components/CustomDrawerHeader';
 import NewAssignment from '../screens/NewAssignmentScreen';
@@ -16,6 +17,10 @@ import Policy from '../screens/PolicyScreen';
 import Support from '../screens/SupportScreen';
 import { useSelector, useDispatch } from 'react-redux';
 import { BASE_URL,IMAGE_PATH } from '../services/userServices';
+import { COLORS } from '../config';
+import { userLogout } from '../services/userServices'
+import { removeData } from '../asyncStorage';
+import { setUser } from '../redux/userReducer';
 
 const { height, width } = Dimensions.get('screen');
 const Drawer = createDrawerNavigator();
@@ -34,6 +39,7 @@ const imageMap = {
 };
 
 const CustomDrawerItem = ({ label, onPress, isActive }) => {
+  
   const user = useSelector((state) => state.userReducer.userInfo);
   const image = imageMap[label] || require('../assetes/images/home.png'); // Fallback image
 
@@ -56,7 +62,7 @@ const CustomDrawerItem = ({ label, onPress, isActive }) => {
       {user?.email}
       </Text>
       </View>
-    </TouchableOpacity>:
+    </TouchableOpacity>:label === 'GetStartedScreen'?null:
     <TouchableOpacity
     style={[styles.drawerItem, isActive && styles.drawerItemActive]}
     onPress={onPress}
@@ -70,9 +76,20 @@ const CustomDrawerItem = ({ label, onPress, isActive }) => {
 };
 
 const CustomDrawer = (props) => {
-  
+  const dispatch=useDispatch();
   const { state, navigation } = props;
   const { routes, index } = state;
+  const logout = async () => {
+    dispatch(setUser(null));
+    await userLogout();
+    await removeData('@token');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'GetStartedScreen' }],
+      })
+    ); // Ensure 'Login' is in your navigation structure
+  };
 
   return (
     <View style={styles.drawerContainer}>
@@ -86,7 +103,18 @@ const CustomDrawer = (props) => {
             isActive={index === idx}
           />
         ))}
+         <Pressable
+         style={{paddingHorizontal:width*0.045, paddingVertical:width*0.04, borderBottomWidth:1, borderBottomColor:COLORS.LIGTH_GRAY, flexDirection:'row'}}
+         onPress={()=>logout()}
+         >
+        <Image
+          source={require('../assetes/images/logout.png')}
+          style={styles.drawerItemImage}
+        />
+        <Text>Logout</Text>
+      </Pressable>
       </View>
+     
     </View>
   );
 };
@@ -146,8 +174,14 @@ const DrawerNavigation = () => (
           headerStyle: { backgroundColor: '#FFF' },
           headerTintColor: '#031D53',
         }}
-      />
-      
+      />      
+      <Drawer.Screen
+        name="GetStartedScreen"
+        component={GetStartedScreen}
+        options={{
+           headerShown:false
+        }}
+      />      
     </Drawer.Navigator>
   </>
 );

@@ -19,7 +19,7 @@ const Policy = (props) => {
     policy('privacy')
     .then(res=>{
       setPolicyTitle(res?.title)
-      setSource(res.policy.policy)
+      setSource(res?.policy?.policy)
     })
 
   },[isFocused])

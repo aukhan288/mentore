@@ -4,17 +4,29 @@ import Icon from 'react-native-vector-icons/FontAwesome';
 import { useNavigation } from '@react-navigation/native';
 import { useSelector, useDispatch } from 'react-redux';
 import BottomTab from "../components/BottomTab";
-import { BASE_URL, IMAGE_PATH } from "../services/userServices";
-
+import { BASE_URL, IMAGE_PATH, userLogout } from "../services/userServices";
+import { removeData } from '../asyncStorage';
+import { setUser } from '../redux/userReducer';
 const { height, width } = Dimensions.get('screen');
 const Profile = (props) => {
   const user = useSelector((state) => state.userReducer.userInfo);
   const [showPassword, setShowPassword] = useState(false);
   const navigation = useNavigation();
+  const dispatch=useDispatch();
+  const signOut=async()=>{
+    dispatch(setUser(null));
+    await userLogout();
+    await removeData('@token');
+    navigation.dispatch(
+      CommonActions.reset({
+        index: 0,
+        routes: [{ name: 'GetStartedScreen' }],
+      })
+    );
+  }
   return (
     <View style={styles.mainContainer}>
-      {console.log(user?.image)
-      }
+
       <ImageBackground source={require('../assetes/images/bg-blue.jpg')}>
         <View style={{display:'flex',flexDirection:'column',alignItems:'center', height:height*0.4, paddingTop:height*0.02}}>
             <Image 
@@ -49,6 +61,7 @@ const Profile = (props) => {
       </TouchableOpacity>
 
       <TouchableOpacity
+      onPress={()=>signOut()}
       style={{backgroundColor:'#FF5F00', flexDirection:'row',justifyContent:'center',alignItems:'center', borderRadius:8, paddingVertical:20,paddingHorizontal:10, marginTop:height*0.06}}
       >
         <Text style={{color:'#FFF',fontWeight:'600',fontSize:width*0.04}}>Logout</Text>
